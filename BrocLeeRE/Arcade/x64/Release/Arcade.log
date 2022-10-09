@@ -1,0 +1,7 @@
+﻿  Game.cpp
+  main.cpp
+  Generating code
+  Compiler switch has changed, fall back to full compilation.
+  All 40 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  Arcade.vcxproj -> H:\turbo_octo_brocolli\BrocLeeRE\x64\Release\Arcade.exe

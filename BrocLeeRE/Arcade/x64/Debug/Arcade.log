@@ -1,0 +1,3 @@
+﻿  main.cpp
+H:\turbo_octo_brocolli\BrocLeeRE\Arcade\main.cpp(1,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  Arcade.vcxproj -> H:\turbo_octo_brocolli\BrocLeeRE\x64\Debug\Arcade.exe
