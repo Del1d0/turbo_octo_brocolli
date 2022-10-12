@@ -2,6 +2,7 @@
 #include <chrono>
 
 #include "Player.h"
+#include "Entity.h"
 #include "Game.h"
 #include "Renderer.h"
 
@@ -12,8 +13,12 @@ int main()
 	int FPS = 10;
 	int refreshRate = static_cast<int>(1000/FPS); //refresh rate in ms
 	
+	Renderer randy(50, 100);
 	Player p1;
 	bool isPaused = false;
+
+	Game gameInst(p1, randy, std::vector<Entity*>());
+
 	auto begin = std::chrono::steady_clock::now();
 	while (true)
 	{
