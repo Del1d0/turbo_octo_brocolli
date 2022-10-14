@@ -16,8 +16,8 @@ int main()
 	Renderer randy(50, 100);
 	Player p1;
 	bool isPaused = false;
-
-	Game gameInst(p1, randy, std::vector<Entity*>());
+	auto ents = std::vector<Entity*>();
+	Game game(p1, randy, ents);
 
 	auto begin = std::chrono::steady_clock::now();
 	while (true)
@@ -26,7 +26,7 @@ int main()
 		auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
 		if (elapsed_ms.count() == refreshRate)
 		{
-			//isPaused = p1.isPaused();
+			
 			cout << "Doing something\n";
 			auto dir = p1.checkController();
 			
