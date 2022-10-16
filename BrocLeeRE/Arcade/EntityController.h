@@ -5,7 +5,6 @@ class EntityController : public BaseController
 {
 public:
 	void getControls() override;
-	void setCoordinates(Entity& hostEntity) override;
 	// логику отслеживания игрока запихать сюда?
 private:
 	Coords movingAlgorithm(Coords& prevLocation); // пред. координаты берутся из hostEntity и в него же записываются новые

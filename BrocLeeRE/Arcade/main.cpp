@@ -14,11 +14,12 @@ int main()
 	int refreshRate = static_cast<int>(1000/FPS); //refresh rate in ms
 	
 	Renderer randy(50, 100);
-	Player p1;
 	bool isPaused = false;
-	auto ents = std::vector<Entity*>();
-	Game game(p1, randy, ents);
-
+	int winX = 100;
+	int winY = 100;
+	Game game(winX, winY);
+	game.initGame();
+	
 	auto begin = std::chrono::steady_clock::now();
 	while (true)
 	{
@@ -26,11 +27,13 @@ int main()
 		auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
 		if (elapsed_ms.count() == refreshRate)
 		{
-			
 			cout << "Doing something\n";
-			auto dir = p1.checkController();
 			
-			
+			game.update();
+			game.checkCollisions();
+			game.checkGameOver();
+			game.render();
+
 			begin = end;
 		}
 	}

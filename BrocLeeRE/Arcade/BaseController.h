@@ -11,5 +11,7 @@ class BaseController
 {
 public:
 	virtual void getControls() = 0;
-	virtual void setCoordinates(Entity& hostEntity) = 0; // ставит координаты своему Entity на основании решения Controller
+	void setCoordinates(Entity& hostEntity); // ставит координаты своему Entity на основании решения Controller
+protected:
+	Action mAction;
 };

@@ -12,5 +12,7 @@ class EnemyEntity : public ShootingEntity // враги, стреляют в примерном направл
 // буду наследоваться от EnemyEntity для создания разных врагов (ракетные дроны, стреляющие дроны, босс ракетовоз с лазерами и прочим)
 {
 public:
-	void shoot() override; // 
+	void shoot() override;
+	virtual void OnCollision() override;
+	virtual void move() override;
 };
