@@ -58,7 +58,8 @@ public:
 				 //снаряды летят по прямой, ракеты могут наводиться (?), лазеры по прямой, враги всяко разно (задать синусом или сплайном)
 	virtual void OnCollision() = 0; //взаимодействие с другими Entity при контакте?
 			 //не понятно, как сделать взаимодействие (квадратный хитбокс вокруг центра (Coords) Entity или что-то типа того)?
-	
+	void setPosition(Coords& coords) { mPos = coords; };
+	void setPosition(int x, int y) { mPos.x = x; mPos.y = y; };
 protected:
 	Direction mDirection;
 	EntityType mType;

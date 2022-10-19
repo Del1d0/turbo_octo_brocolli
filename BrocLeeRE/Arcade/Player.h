@@ -11,8 +11,6 @@ public:
 	void shoot() override;
 	virtual void OnCollision() override;
 	virtual void move() override;
-	void setPosition(Coords& coords) { mPos = coords; };
-	void setPosition(int x, int y) { mPos.x = x; mPos.y = y; };
 private:
 	//завести enum с типом вооружения, чтобы знать, какое сейчас активно
 	int nRockets = 0; // боезапас ракет
