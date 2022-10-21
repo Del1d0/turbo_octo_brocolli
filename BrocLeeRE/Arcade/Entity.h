@@ -1,21 +1,24 @@
 #pragma once
 #include "EntityController.h"
 
-struct Coords
+struct Vector2
 {
-	Coords(int X = 0, int Y = 0) : x(X), y(Y) {};
-	Coords(Coords& other) : x(other.x), y(other.y) {};
-	~Coords() {};
+	Vector2(int X = 0, int Y = 0) : x(X), y(Y) {};
+	Vector2(const Vector2& other) : x(other.x), y(other.y) {};
+	~Vector2() {};
+
+	Vector2 operator+(Vector2 other)
+	{
+		return Vector2(this->x + other.x, this->y + other.y);
+	}
+
+	Vector2 operator*(double a)
+	{
+		return Vector2(a * this->x, a * this->y);
+	}
+
 	int x = 0;
 	int y = 0;
-};
-
-struct Velocity
-{
-	Velocity(int Vx = 1, int Vy = 1) : vx(Vx), vy(Vy) {};
-	~Velocity() {};
-	int vx;
-	int vy;
 };
 
 struct HitboxDimensions
@@ -52,19 +55,20 @@ enum EntityType
 class Entity
 {
 public:
-	Entity(Coords& coords, EntityType& type, Velocity& velocity);
-	~Entity() {};
-	virtual void move() = 0; //двигается контроллером (человек, алгоритм)
+	Entity(Vector2& coords, EntityType& type, Vector2& velocity);
+	virtual ~Entity() {};
+	virtual void action() = 0; //двигается контроллером (человек, алгоритм)
 				 //снаряды летят по прямой, ракеты могут наводиться (?), лазеры по прямой, враги всяко разно (задать синусом или сплайном)
 	virtual void OnCollision() = 0; //взаимодействие с другими Entity при контакте?
-			 //не понятно, как сделать взаимодействие (квадратный хитбокс вокруг центра (Coords) Entity или что-то типа того)?
-	void setPosition(Coords& coords) { mPos = coords; };
+			 //не понятно, как сделать взаимодействие (квадратный хитбокс вокруг центра (Vector2) Entity или что-то типа того)?
+	void setPosition(Vector2& coords) { mPos = coords; };
 	void setPosition(int x, int y) { mPos.x = x; mPos.y = y; };
+	Vector2 getPosition() const { return mPos; }; 
 protected:
 	Direction mDirection;
 	EntityType mType;
 	EntityController mController = EntityController();
-	Coords mPos; //позиция
-	Velocity mVel; //скорость (возможно разная для разных осей)
+	Vector2 mPos; //позиция
+	Vector2 mVel; //скорость (возможно разная для разных осей)
 
 };

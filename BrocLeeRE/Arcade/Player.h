@@ -10,12 +10,14 @@ public:
 	~Player() {};
 	void shoot() override;
 	virtual void OnCollision() override;
-	virtual void move() override;
+	virtual void action() override;
 private:
 	//завести enum с типом вооружения, чтобы знать, какое сейчас активно
 	int nRockets = 0; // боезапас ракет
 	int nLaserShots = 0; // боезапас лазеров
-
+	
+	PlayerController mController = PlayerController();
+	
 	int hpVal = 100;
 	int hpCapacity = 100;
 	int shieldVal = 50;

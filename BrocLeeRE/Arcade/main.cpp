@@ -1,6 +1,6 @@
 #include <iostream>
 #include <chrono>
-
+#include "Constants.h"
 #include "Player.h"
 #include "Entity.h"
 #include "Game.h"
@@ -9,10 +9,7 @@
 using namespace std;
 
 int main()
-{
-	int FPS = 10;
-	int refreshRate = static_cast<int>(1000/FPS); //refresh rate in ms
-	
+{	
 	Renderer randy(50, 100);
 	bool isPaused = false;
 	int winX = 100;

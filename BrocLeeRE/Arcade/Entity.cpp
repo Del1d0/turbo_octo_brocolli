@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-Entity::Entity(Coords& coords, EntityType& type, Velocity& velocity) :
+Entity::Entity(Vector2& coords, EntityType& type, Vector2& velocity) :
 	mPos(coords),
 	mVel(velocity),
 	mType(type)
