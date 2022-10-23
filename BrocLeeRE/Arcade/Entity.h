@@ -59,7 +59,7 @@ public:
 	virtual ~Entity() {};
 	virtual void action() = 0; //двигается контроллером (человек, алгоритм)
 				 //снаряды летят по прямой, ракеты могут наводиться (?), лазеры по прямой, враги всяко разно (задать синусом или сплайном)
-	virtual void OnCollision() = 0; //взаимодействие с другими Entity при контакте?
+	virtual void onCollision() = 0; //взаимодействие с другими Entity при контакте?
 			 //не понятно, как сделать взаимодействие (квадратный хитбокс вокруг центра (Vector2) Entity или что-то типа того)?
 	void setPosition(Vector2& coords) { mPos = coords; };
 	void setPosition(int x, int y) { mPos.x = x; mPos.y = y; };

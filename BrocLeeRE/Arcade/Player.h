@@ -9,7 +9,7 @@ public:
 	Player();
 	~Player() {};
 	void shoot() override;
-	virtual void OnCollision() override;
+	virtual void onCollision() override;
 	virtual void action() override;
 private:
 	//завести enum с типом вооружения, чтобы знать, какое сейчас активно

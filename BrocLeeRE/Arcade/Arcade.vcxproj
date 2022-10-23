@@ -142,6 +142,7 @@
     <ClInclude Include="EnemyEntity.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityController.h" />
+    <ClInclude Include="EntityFactory.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerController.h" />

@@ -2,9 +2,10 @@
 #include "Player.h"
 #include "EnemyEntity.h"
 #include "Renderer.h"
+#include "EntityFactory.h"
 #include <vector>
 
-class Game //(содержит игрока, и вектор сущностей)
+class Game: public EntityFactory //(содержит игрока, и вектор сущностей)
 {
 public:
 	Game(int winX, int winY);
@@ -38,5 +39,6 @@ private:
 	int yWindow; // размеры игрового поля (поле отрисовки), за которое нельзя вылетать (упираемся в невидимые стены)
 				 // враги умирают при вылете за yWindow + длина хитбокса (чтобы не было видно, как они удаляются)
 
+	int nEnemies = 0;
 	
 };
