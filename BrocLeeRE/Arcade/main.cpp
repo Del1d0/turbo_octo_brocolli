@@ -6,8 +6,6 @@
 #include "Game.h"
 #include "Renderer.h"
 
-using namespace std;
-
 int main()
 {	
 	Renderer randy(50, 100);
@@ -22,9 +20,9 @@ int main()
 	{
 		auto end = std::chrono::steady_clock::now();
 		auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
-		if (elapsed_ms.count() == refreshRate)
+		if (elapsed_ms.count() == REFRESH_RATE)
 		{
-			cout << "Doing something\n";
+			std::cout << "Doing something\n";
 			
 			game.update();
 			game.checkCollisions();
