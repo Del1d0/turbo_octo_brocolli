@@ -27,7 +27,16 @@ void Game::update()
 	// обновить координаты игрока на основании ввода (или выстрелить)
 	mPlayer1.action();
 	std::cout << "Player position: x = " << mPlayer1.getPosition().x << "\t, y = " << mPlayer1.getPosition().y << std::endl;
-	
+	if (mBackgroundObjects.size() == 0)
+	{
+		std::cout << "New entity has been spawned!!!\n";
+		spawnEntity();
+	}
+	if (mBackgroundObjects.size() == 1)
+	{
+		std::cout << "New entity2 has been spawned!!!\n";
+		spawnEntity2();
+	}
 	// обновить координаты врагов на основании их контроллеров
 	// можно параметризовать кривую, по которой они двигаются, чтобы они шли друг за другом паровозиком по зигзагу
 	// шахматный порядок или еще что, в зависимости от типа врага
@@ -46,9 +55,32 @@ void Game::update()
 
 void Game::checkCollisions()
 {
-	// тут же проверку на выход за границу
+	auto plPos = mPlayer1.getPosition();
+	auto plHB = mPlayer1.getHitboxSize();
+	
+	// boundary crossing check
+	if (plPos.x > xWindow)
+		mPlayer1.setPosition(xWindow, plPos.y);
+	else if(plPos.x < 0)
+		mPlayer1.setPosition(0, plPos.y);
+	else if(plPos.y > yWindow)
+		mPlayer1.setPosition(plPos.x, yWindow);
+	else if(plPos.y < 0)
+		mPlayer1.setPosition(plPos.x, 0);
 
-	// игрок вышел за гарницы поля? -> вернуть его назад на самую границу иначе ничего не делаем
+	// test of collisions with objects
+	for (auto ent : mBackgroundObjects)
+	{
+		auto entPos = ent->getPosition();
+		double hitBox = ent->getHitboxSize();
+		if ((plPos.x + plHB >= entPos.x - hitBox) &&
+			(plPos.x - plHB <= entPos.x + hitBox) &&
+			(plPos.y + plHB >= entPos.y - hitBox) &&
+			(plPos.y - plHB <= entPos.y + hitBox))
+		{
+			ent->collide();
+		}
+	}
 
 	// враги вышли за границы поля + длина врага? -> удалить его (вызвать деструктор? или просто удалить из массива?)
 
@@ -60,8 +92,8 @@ void Game::checkCollisions()
 
 bool Game::checkGameOver()
 {
-	// if(p1.getHp() <= 0)
-	//    умираем
+	if (mPlayer1.getHP() <= 0)
+		return true;
 
 	// пока умираем только так, в приницпе, можно добавить режим, где мы защищаем союзника от волн, тогда добавится условие
 	// на хп для союзника
@@ -76,13 +108,42 @@ void Game::render()
 	// отрисовка снарядов
 }
 
-bool Game::spawnNewEnemyWave()
+void Game::spawnNewEnemyWave()
 {
 	if (mEnemies.size() >= 0)
 	{
-		
+
 	}
 	else
-		return false;
+	{
+		return;
+	}
+}
+
+void Game::spawnEntity()
+{
+	auto* bcEnt = new Entity(Vector2(mPlayer1.getPosition().x + 10, 10), EntityType::OBSTACLE, 0);
+
+	bcEnt->setOnCollision(
+		[this]()
+		{
+			std::cout << "collision occured with right one\n";
+			mPlayer1.recieveDamage();
+		}
+	);
+	mBackgroundObjects.push_back(bcEnt);
+}
+
+void Game::spawnEntity2()
+{
+	auto* bcEnt = new Entity(Vector2(mPlayer1.getPosition().x - 10, 10), EntityType::OBSTACLE, 0);
+
+	bcEnt->setOnCollision(
+		[this]()
+		{
+			std::cout << "collision occured with left one\n";
+		}
+	);
+	mBackgroundObjects.push_back(bcEnt);
 }
 

@@ -14,6 +14,7 @@ void PlayerController::getPlayerInput()
 	if (_kbhit())
 	{
 		char userInput = _getch();
+		//std::cout << "USER INPUT: " << userInput << std::endl;
 		switch (userInput)
 		{
 		case 'w':
@@ -54,25 +55,24 @@ void PlayerController::setCoordinates(Entity& hostEntity)
 	switch (mAction)
 	{
 	case MOVE_UP:
-		std::cout << "UP\n";
+		//std::cout << "UP\n";
 		vel1 = Vector2(0, 1);
 		break;
 	case MOVE_DOWN:
-		std::cout << "DOWN\n";
+		//std::cout << "DOWN\n";
 		vel1 = Vector2(0, -1);
 		break;
 	case MOVE_RIGHT:
-		std::cout << "RIGHT\n";
+		//std::cout << "RIGHT\n";
 		vel1 = Vector2(1, 0);
 		break;
 	case MOVE_LEFT:
-		std::cout << "LEFT\n";
+		//std::cout << "LEFT\n";
 		vel1 = Vector2(-1, 0);
 		break;
 	case IDLE:
-		std::cout << "IDLE\n";
-		vel1 = Vector2(0, 0);
-		break;
+		//std::cout << "IDLE\n";
+		return;
 	default:
 		return;
 	}

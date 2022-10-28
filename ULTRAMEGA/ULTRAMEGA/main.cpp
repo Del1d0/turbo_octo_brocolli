@@ -12,7 +12,7 @@ int main()
 	bool isPaused = false;
 	int winX = 100;
 	int winY = 100;
-	Game game(winX, winY, 1);
+	Game game(winX, winY, 3);
 	game.initGame();
 
 	auto begin = std::chrono::steady_clock::now();
@@ -26,15 +26,21 @@ int main()
 
 			game.update();
 			game.checkCollisions();
-			game.checkGameOver();
+			auto go = game.checkGameOver();
 			//game.render();
+
+			if (go)
+			{
+				cout << "==== YOU DIED! ====\n";
+				break;
+			}
 
 			begin = end;
 			TIME_PASSED += (REFRESH_RATE / 1000.0);
 		}
 	}
 
-
+	//system("pause");
 
 	return 0;
 }

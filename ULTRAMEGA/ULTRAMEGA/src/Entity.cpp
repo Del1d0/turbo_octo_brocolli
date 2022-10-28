@@ -7,3 +7,22 @@ Entity::Entity(Vector2 coords, EntityType type, double speed) :
 {
 	mDirection = Direction::NONE;
 }
+
+void Entity::action()
+{
+
+}
+
+void Entity::setOnCollision(std::function<void()> onCollide)
+{
+	this->onCollision = onCollide;
+}
+
+void Entity::collide()
+{
+	if (onCollision)
+	{
+		isCollided = true;
+		onCollision();
+	}
+}

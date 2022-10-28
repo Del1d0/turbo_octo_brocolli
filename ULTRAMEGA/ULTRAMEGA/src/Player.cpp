@@ -1,4 +1,5 @@
 #include "../include/Player.h"
+#include <iostream>
 
 //Direction Player::checkController()
 //{
@@ -31,14 +32,23 @@ void Player::shoot()
 	return;
 }
 
-void Player::onCollision()
-{
-	return;
-}
-
 void Player::action()
 {
 	pc.getControls();
 	pc.updatePosition(*this);
 	return;
+}
+
+void Player::recieveDamage()
+{
+	if (shieldVal > 0)
+	{
+		std::cout << "shield damaged\n";
+		shieldVal -= 10;
+	}
+	else
+	{
+		std::cout << "damage recieved\n";
+		hpVal -= 10;
+	}
 }

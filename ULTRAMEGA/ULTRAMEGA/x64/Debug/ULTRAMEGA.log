@@ -1,2 +1,15 @@
 ﻿  main.cpp
+  BaseController.cpp
+  Entity.cpp
+  EntityController.cpp
+  Game.cpp
+E:\turbo_octo_brocolli\ULTRAMEGA\ULTRAMEGA\src\Game.cpp(52,38): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+E:\turbo_octo_brocolli\ULTRAMEGA\ULTRAMEGA\src\Game.cpp(54,32): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+E:\turbo_octo_brocolli\ULTRAMEGA\ULTRAMEGA\src\Game.cpp(56,29): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+E:\turbo_octo_brocolli\ULTRAMEGA\ULTRAMEGA\src\Game.cpp(58,29): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+  Player.cpp
+  PlayerController.cpp
+  Renderer.cpp
+  ShootingEntity.cpp
+  Generating Code...
   ULTRAMEGA.vcxproj -> E:\turbo_octo_brocolli\ULTRAMEGA\x64\Debug\ULTRAMEGA.exe

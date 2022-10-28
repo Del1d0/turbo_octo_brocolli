@@ -24,7 +24,10 @@ public:
 	
 
 private:
-	bool spawnNewEnemyWave(); // запускаем новую волну, если враги кончились
+	void spawnNewEnemyWave(); // запускаем новую волну, если враги кончились
+
+	void spawnEntity();
+	void spawnEntity2();
 
 	Player mPlayer1; // игрок
 	std::vector<Entity*> mBackgroundObjects; // всякие объекты на карте, которые пролетают фоном (зациклить их просто при вылете за карту

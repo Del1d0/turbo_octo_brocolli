@@ -15,7 +15,6 @@ public:
 	ShootingEntity(Vector2 coords, EntityType type, double speed);
 	virtual ~ShootingEntity() {};
 	virtual void shoot() = 0; //стреляет на основе решения контроллера (человек, алгоритм)
-	//virtual void onCollision() = 0;
 protected:
 	int bulletCoolDown = 10; // скорострельность пушки(не понятно как отсчитывать время между выстрелами)
 						// добавить разные виды пушек (обычная, быстрая, взрывная и т.д.)

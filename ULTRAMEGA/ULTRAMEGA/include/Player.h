@@ -9,8 +9,9 @@ public:
 	Player(Vector2 coords, double speed);
 	~Player() {};
 	void shoot() override;
-	void onCollision() override;
 	void action() override;
+	void recieveDamage();
+	int getHP() const { return hpVal; };
 private:
 	//завести enum с типом вооружения, чтобы знать, какое сейчас активно
 	int nRockets = 0; // боезапас ракет

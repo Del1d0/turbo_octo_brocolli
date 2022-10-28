@@ -1,5 +1,6 @@
 #pragma once
 //#include "../include/EntityController.h"
+#include <functional>
 
 enum Action
 {
@@ -71,19 +72,25 @@ public:
 	Entity() = delete;
 	Entity(Vector2 coords, EntityType type, double speed = 0.1);
 	virtual ~Entity() {};
-	virtual void action() = 0; //двигается контроллером (человек, алгоритм)
+	virtual void action(); //двигается контроллером (человек, алгоритм)
 	//снаряды летят по прямой, ракеты могут наводиться (?), лазеры по прямой, враги всяко разно (задать синусом или сплайном)
-	virtual void onCollision() = 0; //взаимодействие с другими Entity при контакте?
+	void setOnCollision(std::function<void()> onCollide);
+	void collide(); //взаимодействие с другими Entity при контакте
 	//не понятно, как сделать взаимодействие (квадратный хитбокс вокруг центра (Vector2) Entity или что-то типа того)?
 	void setPosition(Vector2& coords) { mPos = coords; };
 	void setPosition(int x, int y) { mPos.x = x; mPos.y = y; };
 	Vector2 getPosition() const { return mPos; };
 	double getSpeed() const { return mSpeed; };
+	double getHitboxSize() const { return mHitboxSize; };
 protected:
 	Direction mDirection;
 	EntityType mType;
 	//EntityController mController;
 	Vector2 mPos; //позиция
 	double mSpeed; //скорость (возможно разная для разных осей)
+	double mHitboxSize = 2;
+private:
+	std::function<void()> onCollision;
+	bool isCollided = false;
 
 };
