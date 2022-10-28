@@ -2,18 +2,7 @@
 #include "Constants.h"
 #include "Entity.h"
 
-enum Action
-{
-	MOVE_UP,
-	MOVE_DOWN,
-	MOVE_RIGHT,
-	MOVE_LEFT,
-	SHOOT,
-	WEP_CHANGE,
-	USE_BONUS,
-	PAUSE,
-	IDLE
-};
+
 
 class BaseController
 {

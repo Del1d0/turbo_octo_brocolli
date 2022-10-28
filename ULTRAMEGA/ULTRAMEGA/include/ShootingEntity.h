@@ -12,7 +12,7 @@
 class ShootingEntity : public Entity // управл€ема€ стрел€юща€ штука (враги, игрок)
 {
 public:
-	ShootingEntity(Vector2 coords, EntityType type, Vector2 velocity);
+	ShootingEntity(Vector2 coords, EntityType type, double speed);
 	virtual ~ShootingEntity() {};
 	virtual void shoot() = 0; //стрел€ет на основе решени€ контроллера (человек, алгоритм)
 	//virtual void onCollision() = 0;

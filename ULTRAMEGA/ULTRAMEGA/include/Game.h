@@ -8,6 +8,8 @@
 class Game: public EntityFactory //(содержит игрока, и вектор сущностей)
 {
 public:
+	Game() = delete;
+	Game(int winX, int winY, double plSpeed);
 	Game(int winX, int winY);
 
 	void initGame(); // расставляем игрока, начальные облака и прочее

@@ -20,10 +20,10 @@
 //    return mPause;
 //}
 
-Player::Player(Vector2 coords, Vector2 velocity) :
-	ShootingEntity(coords, EntityType::PLAYER, velocity)
+Player::Player(Vector2 coords, double speed) :
+	ShootingEntity(coords, EntityType::PLAYER, speed)
 {
-
+	pc = PlayerController();
 }
 
 void Player::shoot()
@@ -38,7 +38,7 @@ void Player::onCollision()
 
 void Player::action()
 {
-	/*pc.getControls();
-	pc.updatePosition(*this);*/
+	pc.getControls();
+	pc.updatePosition(*this);
 	return;
 }

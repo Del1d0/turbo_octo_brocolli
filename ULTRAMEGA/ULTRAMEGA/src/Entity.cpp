@@ -1,8 +1,8 @@
 #include "../include/Entity.h"
 
-Entity::Entity(Vector2 coords, EntityType type, Vector2 velocity) :
+Entity::Entity(Vector2 coords, EntityType type, double speed) :
 	mPos(coords),
-	mVel(velocity),
+	mSpeed(speed),
 	mType(type)
 {
 	mDirection = Direction::NONE;

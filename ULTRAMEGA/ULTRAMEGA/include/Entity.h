@@ -1,6 +1,19 @@
 #pragma once
 //#include "../include/EntityController.h"
-class EntityController;
+
+enum Action
+{
+	MOVE_UP,
+	MOVE_DOWN,
+	MOVE_RIGHT,
+	MOVE_LEFT,
+	SHOOT,
+	WEP_CHANGE,
+	USE_BONUS,
+	PAUSE,
+	IDLE
+};
+
 struct Vector2
 {
 	Vector2(double X = 0, double Y = 0) : x(X), y(Y) {};
@@ -56,7 +69,7 @@ class Entity
 {
 public:
 	Entity() = delete;
-	Entity(Vector2 coords, EntityType type, Vector2 velocity);
+	Entity(Vector2 coords, EntityType type, double speed = 0.1);
 	virtual ~Entity() {};
 	virtual void action() = 0; //двигается контроллером (человек, алгоритм)
 	//снаряды летят по прямой, ракеты могут наводиться (?), лазеры по прямой, враги всяко разно (задать синусом или сплайном)
@@ -65,11 +78,12 @@ public:
 	void setPosition(Vector2& coords) { mPos = coords; };
 	void setPosition(int x, int y) { mPos.x = x; mPos.y = y; };
 	Vector2 getPosition() const { return mPos; };
+	double getSpeed() const { return mSpeed; };
 protected:
 	Direction mDirection;
 	EntityType mType;
 	//EntityController mController;
 	Vector2 mPos; //позиция
-	Vector2 mVel; //скорость (возможно разная для разных осей)
+	double mSpeed; //скорость (возможно разная для разных осей)
 
 };

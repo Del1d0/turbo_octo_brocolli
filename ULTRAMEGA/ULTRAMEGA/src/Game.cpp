@@ -1,16 +1,23 @@
 #include "../include/Game.h"
 #include <iostream>
 
+Game::Game(int winX, int winY, double plSpeed) :
+	xWindow(winX),
+	yWindow(winY),
+	mPlayer1(Player(Vector2(winX / 2, winY - 0.1 * winY), plSpeed))
+{
+}
+
 Game::Game(int winX, int winY) :
 	xWindow(winX),
 	yWindow(winY),
-	mPlayer1(Player(Vector2(winX / 2, winY - 0.1 * winY), Vector2(0,0)))
+	mPlayer1(Player(Vector2(winX / 2, winY - 0.1 * winY), 1))
 {
 }
 
 void Game::initGame()
 {
-	mPlayer1.setPosition(xWindow / 2, yWindow / 2); // initialize player position
+	//mPlayer1.setPosition(xWindow / 2, yWindow / 2); // initialize player position
 
 	//инициализация фоновых объектов (облака для начала)
 }
