@@ -39,16 +39,17 @@ void Player::action()
 	return;
 }
 
-void Player::recieveDamage()
+bool Player::checkCollidedHitboxes(const Entity* other) const
 {
-	if (shieldVal > 0)
-	{
-		std::cout << "shield damaged\n";
-		shieldVal -= 10;
-	}
+	// check whether the player's hitbox crosses other's hitbox
+	auto entPos = other->getPosition();
+	double hitBox = other->getHitboxSize();
+
+	if ((mPos.x + mHitboxSize >= entPos.x - hitBox) &&
+		(mPos.x - mHitboxSize <= entPos.x + hitBox) &&
+		(mPos.y + mHitboxSize >= entPos.y - hitBox) &&
+		(mPos.y - mHitboxSize <= entPos.y + hitBox))
+		return true;
 	else
-	{
-		std::cout << "damage recieved\n";
-		hpVal -= 10;
-	}
+		return false;
 }

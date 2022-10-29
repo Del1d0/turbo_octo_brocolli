@@ -13,4 +13,7 @@ class EnemyEntity : public ShootingEntity // враги, стреляют в примерном направл
 {
 public:
 	void shoot() override;
+
+protected:
+	int mDamage;
 };

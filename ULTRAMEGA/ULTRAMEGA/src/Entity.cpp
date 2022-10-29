@@ -1,4 +1,5 @@
 #include "../include/Entity.h"
+#include <iostream>
 
 Entity::Entity(Vector2 coords, EntityType type, double speed) :
 	mPos(coords),
@@ -24,5 +25,19 @@ void Entity::collide()
 	{
 		isCollided = true;
 		onCollision();
+	}
+}
+
+void Entity::recieveDamage(int dmg)
+{
+	if (shieldVal > 0)
+	{
+		std::cout << "shield damaged\n";
+		shieldVal -= dmg;
+	}
+	else
+	{
+		std::cout << "damage recieved\n";
+		hpVal -= dmg;
 	}
 }

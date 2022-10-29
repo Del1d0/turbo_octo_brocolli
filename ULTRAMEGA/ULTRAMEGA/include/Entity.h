@@ -82,6 +82,8 @@ public:
 	Vector2 getPosition() const { return mPos; };
 	double getSpeed() const { return mSpeed; };
 	double getHitboxSize() const { return mHitboxSize; };
+	void recieveDamage(int dmg);
+	int getHP() const { return hpVal; };
 protected:
 	Direction mDirection;
 	EntityType mType;
@@ -89,6 +91,12 @@ protected:
 	Vector2 mPos; //позиция
 	double mSpeed; //скорость (возможно разная для разных осей)
 	double mHitboxSize = 2;
+
+	int hpVal = 100;
+	int hpCapacity = 100;
+	int shieldVal = 50;
+	int shieldCapacity = 50;
+
 private:
 	std::function<void()> onCollision;
 	bool isCollided = false;

@@ -10,15 +10,11 @@ public:
 	~Player() {};
 	void shoot() override;
 	void action() override;
-	void recieveDamage();
-	int getHP() const { return hpVal; };
+	
+	bool checkCollidedHitboxes(const Entity* other) const;
 private:
 	//завести enum с типом вооружения, чтобы знать, какое сейчас активно
 	int nRockets = 0; // боезапас ракет
 	int nLaserShots = 0; // боезапас 
 	PlayerController pc;
-	int hpVal = 100;
-	int hpCapacity = 100;
-	int shieldVal = 50;
-	int shieldCapacity = 50;
 };

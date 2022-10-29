@@ -32,11 +32,6 @@ void Game::update()
 		std::cout << "New entity has been spawned!!!\n";
 		spawnEntity();
 	}
-	if (mBackgroundObjects.size() == 1)
-	{
-		std::cout << "New entity2 has been spawned!!!\n";
-		spawnEntity2();
-	}
 	// обновить координаты врагов на основании их контроллеров
 	// можно параметризовать кривую, по которой они двигаются, чтобы они шли друг за другом паровозиком по зигзагу
 	// шахматный порядок или еще что, в зависимости от типа врага
@@ -71,12 +66,7 @@ void Game::checkCollisions()
 	// test of collisions with objects
 	for (auto ent : mBackgroundObjects)
 	{
-		auto entPos = ent->getPosition();
-		double hitBox = ent->getHitboxSize();
-		if ((plPos.x + plHB >= entPos.x - hitBox) &&
-			(plPos.x - plHB <= entPos.x + hitBox) &&
-			(plPos.y + plHB >= entPos.y - hitBox) &&
-			(plPos.y - plHB <= entPos.y + hitBox))
+		if (mPlayer1.checkCollidedHitboxes(ent))
 		{
 			ent->collide();
 		}
@@ -128,20 +118,7 @@ void Game::spawnEntity()
 		[this]()
 		{
 			std::cout << "collision occured with right one\n";
-			mPlayer1.recieveDamage();
-		}
-	);
-	mBackgroundObjects.push_back(bcEnt);
-}
-
-void Game::spawnEntity2()
-{
-	auto* bcEnt = new Entity(Vector2(mPlayer1.getPosition().x - 10, 10), EntityType::OBSTACLE, 0);
-
-	bcEnt->setOnCollision(
-		[this]()
-		{
-			std::cout << "collision occured with left one\n";
+			mPlayer1.recieveDamage(10);
 		}
 	);
 	mBackgroundObjects.push_back(bcEnt);
