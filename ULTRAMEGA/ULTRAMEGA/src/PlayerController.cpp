@@ -48,7 +48,7 @@ void PlayerController::getPlayerInput()
 	return;
 }
 
-void PlayerController::setCoordinates(Entity& hostEntity)
+void PlayerController::setCoordinates(Entity* hostEntity)
 {
 	Vector2 vel1;
 	
@@ -77,9 +77,9 @@ void PlayerController::setCoordinates(Entity& hostEntity)
 		return;
 	}
 
-	Vector2 newCoord = hostEntity.getPosition() + vel1*hostEntity.getSpeed();
+	Vector2 newCoord = hostEntity->getPosition() + vel1*hostEntity->getSpeed();
 
-	hostEntity.setPosition(newCoord);
+	hostEntity->setPosition(newCoord);
 
 	return;
 }

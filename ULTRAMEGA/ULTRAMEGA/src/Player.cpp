@@ -35,11 +35,11 @@ void Player::shoot()
 void Player::action()
 {
 	pc.getControls();
-	pc.updatePosition(*this);
+	pc.updatePosition(this);
 	return;
 }
 
-bool Player::checkCollidedHitboxes(const Entity* other) const
+bool Player::checkCollidedHitboxes(const std::shared_ptr<Entity> other) const
 {
 	// check whether the player's hitbox crosses other's hitbox
 	auto entPos = other->getPosition();

@@ -85,7 +85,7 @@ bool Game::checkGameOver()
 	if (mPlayer1.getHP() <= 0)
 		return true;
 
-	// пока умираем только так, в приницпе, можно добавить режим, где мы защищаем союзника от волн, тогда добавится условие
+	// пока умираем только так, в принципе, можно добавить режим, где мы защищаем союзника от волн, тогда добавится условие
 	// на хп для союзника
 	return false;
 }
@@ -100,7 +100,7 @@ void Game::render()
 
 void Game::spawnNewEnemyWave()
 {
-	if (mEnemies.size() >= 0)
+	if (mEnemies.size() == 0)
 	{
 
 	}
@@ -112,7 +112,7 @@ void Game::spawnNewEnemyWave()
 
 void Game::spawnEntity()
 {
-	auto* bcEnt = new Entity(Vector2(mPlayer1.getPosition().x + 10, 10), EntityType::OBSTACLE, 0);
+	auto bcEnt = std::make_shared<Entity>(Vector2(mPlayer1.getPosition().x + 10, 10), EntityType::OBSTACLE, 0);
 
 	bcEnt->setOnCollision(
 		[this]()

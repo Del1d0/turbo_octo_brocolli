@@ -1,6 +1,6 @@
 #include "../include/BaseController.h"
 
-void BaseController::setCoordinates(Entity& hostEntity)
+void BaseController::setCoordinates(std::shared_ptr<Entity> hostEntity)
 {
 	Vector2 vel1;
 	switch (mAction)
@@ -21,9 +21,9 @@ void BaseController::setCoordinates(Entity& hostEntity)
 		return;
 	}
 	
-	Vector2 newCoord = hostEntity.getPosition() + vel1 * REFRESH_RATE;
+	Vector2 newCoord = hostEntity->getPosition() + vel1 * REFRESH_RATE;
 	
-	hostEntity.setPosition(newCoord);
+	hostEntity->setPosition(newCoord);
 	
 	return;
 }
