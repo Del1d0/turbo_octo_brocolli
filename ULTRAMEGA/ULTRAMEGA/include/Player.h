@@ -1,6 +1,7 @@
 #pragma once
 #include "ShootingEntity.h"
 #include "PlayerController.h"
+#include <memory>
 
 class Player : public ShootingEntity // (двигается, стреляет пушками, стреляет ракетами, лазерами и т.д.)
 	// помимо ХП сделать какой-нибудь щит, который теряется от ударов, его можно подзаряжать
@@ -11,7 +12,7 @@ public:
 	void shoot() override;
 	void action() override;
 	
-	bool checkCollidedHitboxes(const Entity* other) const;
+	bool checkCollidedHitboxes(const std::shared_ptr<Entity> other) const;
 private:
 	//завести enum с типом вооружения, чтобы знать, какое сейчас активно
 	int nRockets = 0; // боезапас ракет

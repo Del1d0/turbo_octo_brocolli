@@ -14,6 +14,7 @@ void PlayerController::getPlayerInput()
 	if (_kbhit())
 	{
 		char userInput = _getch();
+		
 		//std::cout << "USER INPUT: " << userInput << std::endl;
 		switch (userInput)
 		{

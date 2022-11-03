@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "EntityFactory.h"
 #include <vector>
+#include <memory>
 
 class Game: public EntityFactory //(содержит игрока, и вектор сущностей)
 {
@@ -27,16 +28,15 @@ private:
 	void spawnNewEnemyWave(); // запускаем новую волну, если враги кончились
 
 	void spawnEntity();
-	void spawnEntity2();
 
 	Player mPlayer1; // игрок
-	std::vector<Entity*> mBackgroundObjects; // всякие объекты на карте, которые пролетают фоном (зациклить их просто при вылете за карту
+	std::vector<std::shared_ptr<Entity>> mBackgroundObjects; // всякие объекты на карте, которые пролетают фоном (зациклить их просто при вылете за карту
 											 // менять положение на рандомное по х, чтобы появлялись с разных сторон
 											 // можно менять скорость на разную, чтобы возникал эффект параллакса (разная высота облаков)
-	std::vector<Entity*> mProjectiles; // это снаряды, которые летают туда сюда и помирают при вылете за карту / попадании в игрока
+	std::vector< std::shared_ptr<Entity>> mProjectiles; // это снаряды, которые летают туда сюда и помирают при вылете за карту / попадании в игрока
 
 	//будем подавать врагов волнами, и не будем делать новую волну, пока старая не погибнет
-	std::vector<EnemyEntity*> mEnemies; // враги, добавляем \ убираем, когда нужно
+	std::vector<std::shared_ptr<EnemyEntity>> mEnemies; // враги, добавляем \ убираем, когда нужно
 	//std::vector<BonusEntity*> mBonuses; // какие-нибудь бонусы, которые медленно плывут и их можно поднять (быстрая стрельба, лазер какой-нибудь)
 
 
