@@ -2,17 +2,54 @@
 #include <iostream>
 
 Game::Game(int winX, int winY, double plSpeed) :
-	xWindow(winX),
-	yWindow(winY),
-	mPlayer1(Player(Vector2(winX / 2, winY - 0.1 * winY), plSpeed))
+			xWindow(winX),
+			yWindow(winY),
+			app::GameApp(winX, winY),
+			mPlayer1(Player(Vector2(winX / 2, winY - 0.1 * winY), plSpeed))
 {
+	Initialize();
 }
 
 Game::Game(int winX, int winY) :
-	xWindow(winX),
-	yWindow(winY),
-	mPlayer1(Player(Vector2(winX / 2, winY - 0.1 * winY), 1))
+			xWindow(winX),
+			yWindow(winY),
+			app::GameApp(winX, winY),
+			mPlayer1(Player(Vector2(winX / 2, winY - 0.1 * winY), 1))
 {
+	Initialize();
+}
+
+void Game::Initialize()
+{
+	render::LoadResource("resources/images/player.png");
+}
+
+void Game::Render()
+{
+	auto pos = mPlayer1.getPosition();
+	render::DrawImage("player.png", pos.x, pos.y, 64, 64);
+}
+
+void Game::ProcessInput(const Uint8* keyboard)
+{
+	double speed = mPlayer1.getSpeed();
+	auto prevPos = mPlayer1.getPosition();
+	
+	if (keyboard[SDL_SCANCODE_RIGHT] && !keyboard[SDL_SCANCODE_LEFT]) {
+		prevPos.x += speed * 1;
+	}
+	if (keyboard[SDL_SCANCODE_LEFT] && !keyboard[SDL_SCANCODE_RIGHT]) {
+		prevPos.x -= speed * 1;
+	}
+	if (keyboard[SDL_SCANCODE_UP] && !keyboard[SDL_SCANCODE_DOWN]) {
+		prevPos.y -= speed * 1;
+	}
+	if (keyboard[SDL_SCANCODE_DOWN] && !keyboard[SDL_SCANCODE_UP]) {
+		prevPos.y += speed * 1;
+	}
+
+	//assigning new position
+	mPlayer1.setPosition(prevPos);
 }
 
 void Game::initGame()

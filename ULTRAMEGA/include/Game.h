@@ -3,15 +3,22 @@
 #include "EnemyEntity.h"
 #include "Renderer.h"
 #include "EntityFactory.h"
+#include "../src/baseapp.h"
 #include <vector>
 #include <memory>
 
-class Game: public EntityFactory //(содержит игрока, и вектор сущностей)
+class Game: public EntityFactory, public app::GameApp //(содержит игрока, и вектор сущностей)
 {
 public:
 	Game() = delete;
 	Game(int winX, int winY, double plSpeed);
 	Game(int winX, int winY);
+
+	void Initialize() override;
+
+	void Render() override;
+	
+	void ProcessInput(const Uint8* keyboard) override;
 
 	void initGame(); // расставляем игрока, начальные облака и прочее
 	
