@@ -30,7 +30,7 @@ void GameApp::Run() {
 
     ProcessInput(SDL_GetKeyboardState(nullptr));
 
-    SDL_SetRenderDrawColor(render::GetRenderer(), 0, 0, 0, 255);
+    SDL_SetRenderDrawColor(render::GetRenderer(), 255, 255, 255, 255);
     SDL_RenderClear(render::GetRenderer());
 
     Render();

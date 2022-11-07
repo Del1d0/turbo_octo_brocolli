@@ -5,7 +5,7 @@
 #undef main
 int main() {
 	try {
-		Game(800, 800).Run();
+		Game(800, 800, 10).Run();
 	}
 	catch (std::exception& e) {
 		std::cout << e.what() << std::endl;

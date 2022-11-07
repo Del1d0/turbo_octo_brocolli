@@ -21,7 +21,7 @@ void BaseController::setCoordinates(std::shared_ptr<Entity> hostEntity)
 		return;
 	}
 	
-	Vector2 newCoord = hostEntity->getPosition() + vel1 * REFRESH_RATE;
+	Vector2 newCoord = hostEntity->getPosition() + vel1;
 	
 	hostEntity->setPosition(newCoord);
 	

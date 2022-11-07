@@ -14,52 +14,61 @@ Game::Game(int winX, int winY) :
 			xWindow(winX),
 			yWindow(winY),
 			app::GameApp(winX, winY),
-			mPlayer1(Player(Vector2(winX / 2, winY - 0.1 * winY), 1))
+			mPlayer1(Player(Vector2(winX / 2, winY + 0.1 * winY), 1))
 {
 	Initialize();
 }
 
 void Game::Initialize()
 {
-	render::LoadResource("resources/images/player.png");
+
+
+	render::LoadResource("resources/images/player.png"); // player
+	render::LoadResource("resources/images/slug.png"); // slug
+	render::LoadResource("resources/images/apple.png"); // enemy
 }
 
 void Game::Render()
 {
 	auto pos = mPlayer1.getPosition();
 	render::DrawImage("player.png", pos.x, pos.y, 64, 64);
+
+	for (auto ent : mBackgroundObjects)
+	{
+		auto ePos = ent->getPosition();
+		render::DrawImage("apple.png", ePos.x, ePos.y, 64, 64);
+	}
 }
 
 void Game::ProcessInput(const Uint8* keyboard)
 {
 	double speed = mPlayer1.getSpeed();
 	auto prevPos = mPlayer1.getPosition();
-	
-	if (keyboard[SDL_SCANCODE_RIGHT] && !keyboard[SDL_SCANCODE_LEFT]) {
+
+	if (keyboard[SDL_SCANCODE_RIGHT] && !keyboard[SDL_SCANCODE_LEFT] && !(prevPos.x >= xWindow - 2*mPlayer1.getSpriteSize())) {
 		prevPos.x += speed * 1;
 	}
-	if (keyboard[SDL_SCANCODE_LEFT] && !keyboard[SDL_SCANCODE_RIGHT]) {
+	if (keyboard[SDL_SCANCODE_LEFT] && !keyboard[SDL_SCANCODE_RIGHT] && !(prevPos.x <= 0)) {
 		prevPos.x -= speed * 1;
 	}
-	if (keyboard[SDL_SCANCODE_UP] && !keyboard[SDL_SCANCODE_DOWN]) {
+	if (keyboard[SDL_SCANCODE_UP] && !keyboard[SDL_SCANCODE_DOWN] && !(prevPos.y <= 0)) {
 		prevPos.y -= speed * 1;
 	}
-	if (keyboard[SDL_SCANCODE_DOWN] && !keyboard[SDL_SCANCODE_UP]) {
+	if (keyboard[SDL_SCANCODE_DOWN] && !keyboard[SDL_SCANCODE_UP] && !(prevPos.y >= yWindow - 2*mPlayer1.getSpriteSize())) {
 		prevPos.y += speed * 1;
 	}
+	if (keyboard[SDL_SCANCODE_SPACE])
+	{
+		mPlayer1.shoot();
+	}
+
+
 
 	//assigning new position
 	mPlayer1.setPosition(prevPos);
 }
 
-void Game::initGame()
-{
-	//mPlayer1.setPosition(xWindow / 2, yWindow / 2); // initialize player position
-
-	//инициализация фоновых объектов (облака для начала)
-}
-
-void Game::update()
+void Game::Update(Uint32 millis)
 {
 	// обновить координаты игрока на основании ввода (или выстрелить)
 	mPlayer1.action();
@@ -69,6 +78,11 @@ void Game::update()
 		std::cout << "New entity has been spawned!!!\n";
 		spawnEntity();
 	}
+
+	CheckCollisions();
+	
+	if (CheckGameOver())
+		GameOver();
 	// обновить координаты врагов на основании их контроллеров
 	// можно параметризовать кривую, по которой они двигаются, чтобы они шли друг за другом паровозиком по зигзагу
 	// шахматный порядок или еще что, в зависимости от типа врага
@@ -85,20 +99,9 @@ void Game::update()
 	// нужно как-то отслеживать, что у врага идет КД (перезарядка) (заводить отдельный таймер для каждого типа оружия?)
 }
 
-void Game::checkCollisions()
+void Game::CheckCollisions()
 {
 	auto plPos = mPlayer1.getPosition();
-	auto plHB = mPlayer1.getHitboxSize();
-	
-	// boundary crossing check
-	if (plPos.x > xWindow)
-		mPlayer1.setPosition(xWindow, plPos.y);
-	else if(plPos.x < 0)
-		mPlayer1.setPosition(0, plPos.y);
-	else if(plPos.y > yWindow)
-		mPlayer1.setPosition(plPos.x, yWindow);
-	else if(plPos.y < 0)
-		mPlayer1.setPosition(plPos.x, 0);
 
 	// test of collisions with objects
 	for (auto ent : mBackgroundObjects)
@@ -117,7 +120,7 @@ void Game::checkCollisions()
 	// проверяем бонусы, начисляем очки\хп\щиты\бусты\оружие (завести enum с бонусами)
 }
 
-bool Game::checkGameOver()
+bool Game::CheckGameOver()
 {
 	if (mPlayer1.getHP() <= 0)
 		return true;
@@ -127,13 +130,6 @@ bool Game::checkGameOver()
 	return false;
 }
 
-void Game::render()
-{
-	// отрисовка фона
-	// отрисовка игрока
-	// отрисовка врагов
-	// отрисовка снарядов
-}
 
 void Game::spawnNewEnemyWave()
 {

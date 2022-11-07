@@ -76,13 +76,13 @@ public:
 	//снаряды летят по прямой, ракеты могут наводиться (?), лазеры по прямой, враги всяко разно (задать синусом или сплайном)
 	void setOnCollision(std::function<void()> onCollide);
 	void collide(); //взаимодействие с другими Entity при контакте
-	//не понятно, как сделать взаимодействие (квадратный хитбокс вокруг центра (Vector2) Entity или что-то типа того)?
 	void setPosition(Vector2& coords) { mPos = coords; };
-	void setPosition(int x, int y) { mPos.x = x; mPos.y = y; };
+	void setPosition(const int x, const int y) { mPos.x = x; mPos.y = y; };
 	Vector2 getPosition() const { return mPos; };
 	double getSpeed() const { return mSpeed; };
 	double getHitboxSize() const { return mHitboxSize; };
-	void recieveDamage(int dmg);
+	int getSpriteSize() const { return spriteSize; };
+	void recieveDamage(const int dmg);
 	int getHP() const { return hpVal; };
 protected:
 	Direction mDirection;
@@ -90,7 +90,8 @@ protected:
 	//EntityController mController;
 	Vector2 mPos; //позиция
 	double mSpeed; //скорость (возможно разная для разных осей)
-	double mHitboxSize = 2;
+	double mHitboxSize = 40;
+	int spriteSize = 32;
 
 	int hpVal = 100;
 	int hpCapacity = 100;

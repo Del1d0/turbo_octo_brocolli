@@ -20,15 +20,11 @@ public:
 	
 	void ProcessInput(const Uint8* keyboard) override;
 
-	void initGame(); // расставляем игрока, начальные облака и прочее
+	void Update(Uint32 millis) override; // тут обновляем положения объектов, все стреляют, если время подошло
 	
-	void update(); // тут обновляем положения объектов, все стреляют, если время подошло
+	void CheckCollisions(); // проверяем столкновения, отнимаем ХП, подбираем бонусы
 	
-	void checkCollisions(); // проверяем столкновения, отнимаем ХП, подбираем бонусы
-	
-	bool checkGameOver(); // помер ли игрок
-	
-	void render(); // какая-то отрисовка
+	bool CheckGameOver(); // помер ли игрок
 	
 
 private:
