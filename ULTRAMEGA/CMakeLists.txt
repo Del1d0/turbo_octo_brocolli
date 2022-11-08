@@ -38,34 +38,28 @@ set(SOURCES
    ${PROJECT_SOURCE_DIR}/graphics/graphics.cpp
    ${PROJECT_SOURCE_DIR}/graphics/graphics.h
    # source files
-   ${PROJECT_SOURCE_DIR}/src/BaseController.cpp
-   ${PROJECT_SOURCE_DIR}/src/EnemyController.cpp
-   ${PROJECT_SOURCE_DIR}/src/PlayerController.cpp
 
    ${PROJECT_SOURCE_DIR}/src/Entity.cpp
    ${PROJECT_SOURCE_DIR}/src/EnemyEntity.cpp
+   ${PROJECT_SOURCE_DIR}/src/Projectile.cpp
    ${PROJECT_SOURCE_DIR}/src/ShootingEntity.cpp
    ${PROJECT_SOURCE_DIR}/src/Player.cpp
    
    ${PROJECT_SOURCE_DIR}/src/Game.cpp
    ${PROJECT_SOURCE_DIR}/src/EntityFactory.cpp
-   ${PROJECT_SOURCE_DIR}/src/Renderer.cpp
 
    # headers
    ${PROJECT_SOURCE_DIR}/include/snake.h
-   ${PROJECT_SOURCE_DIR}/include/BaseController.h
-   ${PROJECT_SOURCE_DIR}/include/EnemyController.h
-   ${PROJECT_SOURCE_DIR}/include/PlayerController.h
    ${PROJECT_SOURCE_DIR}/include/Constants.h
 
    ${PROJECT_SOURCE_DIR}/include/Entity.h
    ${PROJECT_SOURCE_DIR}/include/EnemyEntity.h
+   ${PROJECT_SOURCE_DIR}/include/Projectile.h
    ${PROJECT_SOURCE_DIR}/include/ShootingEntity.h
    ${PROJECT_SOURCE_DIR}/include/Player.h
    
    ${PROJECT_SOURCE_DIR}/include/Game.h
    ${PROJECT_SOURCE_DIR}/include/EntityFactory.h
-   ${PROJECT_SOURCE_DIR}/include/Renderer.h
    )
 add_executable(${PROJECT_NAME} ${SOURCES})
 

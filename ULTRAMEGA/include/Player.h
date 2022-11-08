@@ -1,6 +1,5 @@
 #pragma once
 #include "ShootingEntity.h"
-#include "PlayerController.h"
 #include <memory>
 
 class Player : public ShootingEntity // (двигается, стреляет пушками, стреляет ракетами, лазерами и т.д.)
@@ -16,6 +15,5 @@ public:
 private:
 	//завести enum с типом вооружения, чтобы знать, какое сейчас активно
 	int nRockets = 0; // боезапас ракет
-	int nLaserShots = 0; // боезапас 
-	PlayerController pc;
+	int nLaserShots = 0; // боезапас
 };

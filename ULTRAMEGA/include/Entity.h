@@ -1,5 +1,4 @@
 #pragma once
-//#include "../include/EntityController.h"
 #include <functional>
 
 enum Action
@@ -63,7 +62,8 @@ enum EntityType
 	ENEMY,
 	BULLET,
 	ROCKET,
-	OBSTACLE
+	OBSTACLE,
+	BACKGROUND
 };
 
 class Entity
@@ -82,14 +82,16 @@ public:
 	double getSpeed() const { return mSpeed; };
 	double getHitboxSize() const { return mHitboxSize; };
 	int getSpriteSize() const { return spriteSize; };
-	void recieveDamage(const int dmg);
 	int getHP() const { return hpVal; };
+	EntityType getType() const { return mType; };
+	void recieveDamage(const int dmg);
+
 protected:
 	Direction mDirection;
-	EntityType mType;
-	//EntityController mController;
+	EntityType mType = BACKGROUND;
 	Vector2 mPos; //позиция
-	double mSpeed; //скорость (возможно разная для разных осей)
+	Action mAction;
+	double mSpeed = 0; //скорость (возможно разная для разных осей)
 	double mHitboxSize = 40;
 	int spriteSize = 32;
 
@@ -97,6 +99,8 @@ protected:
 	int hpCapacity = 100;
 	int shieldVal = 50;
 	int shieldCapacity = 50;
+
+	virtual void movingAlgorithm();
 
 private:
 	std::function<void()> onCollision;

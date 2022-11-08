@@ -1,5 +1,6 @@
 #include "../include/Game.h"
 #include <iostream>
+#include <random>
 
 Game::Game(int winX, int winY, double plSpeed) :
 			xWindow(winX),
@@ -22,22 +23,35 @@ Game::Game(int winX, int winY) :
 void Game::Initialize()
 {
 
-
 	render::LoadResource("resources/images/player.png"); // player
 	render::LoadResource("resources/images/slug.png"); // slug
 	render::LoadResource("resources/images/apple.png"); // enemy
+	
+	int numOfClouds = genRandomNumber(1, 8);
+	
+	for (size_t i = 0; i < numOfClouds; i++)
+	{
+		auto pos = Vector2(genRandomNumber(5, xWindow), genRandomNumber(-50, -30));
+		mBackgroundObjects.push_back(spawnBackgroundObject(pos, genRandomNumber(1, 5)));
+	}
 }
 
 void Game::Render()
 {
-	auto pos = mPlayer1.getPosition();
-	render::DrawImage("player.png", pos.x, pos.y, 64, 64);
 
 	for (auto ent : mBackgroundObjects)
 	{
 		auto ePos = ent->getPosition();
 		render::DrawImage("apple.png", ePos.x, ePos.y, 64, 64);
 	}
+
+	for (auto proj : mProjectiles)
+	{
+		auto ePos = proj->getPosition();
+		render::DrawImage("slug.png", ePos.x, ePos.y, 16, 16);
+	}
+	auto pos = mPlayer1.getPosition();
+	render::DrawImage("player.png", pos.x, pos.y, 64, 64);
 }
 
 void Game::ProcessInput(const Uint8* keyboard)
@@ -57,12 +71,11 @@ void Game::ProcessInput(const Uint8* keyboard)
 	if (keyboard[SDL_SCANCODE_DOWN] && !keyboard[SDL_SCANCODE_UP] && !(prevPos.y >= yWindow - 2*mPlayer1.getSpriteSize())) {
 		prevPos.y += speed * 1;
 	}
-	if (keyboard[SDL_SCANCODE_SPACE])
+	if (keyboard[SDL_SCANCODE_SPACE]) // косячно работает (нельзя лететь по диагонали и стрелять)
 	{
-		mPlayer1.shoot();
+		auto pnt = std::make_shared<Entity>(static_cast<Entity>(mPlayer1));
+		mProjectiles.push_back(spawnProjectile(pnt));
 	}
-
-
 
 	//assigning new position
 	mPlayer1.setPosition(prevPos);
@@ -70,19 +83,24 @@ void Game::ProcessInput(const Uint8* keyboard)
 
 void Game::Update(Uint32 millis)
 {
-	// обновить координаты игрока на основании ввода (или выстрелить)
-	mPlayer1.action();
-	std::cout << "Player position: x = " << mPlayer1.getPosition().x << "\t, y = " << mPlayer1.getPosition().y << std::endl;
-	if (mBackgroundObjects.size() == 0)
+	//std::cout << "Player position: x = " << mPlayer1.getPosition().x << "\t, y = " << mPlayer1.getPosition().y << std::endl;
+
+	for (auto ent : mBackgroundObjects)
 	{
-		std::cout << "New entity has been spawned!!!\n";
-		spawnEntity();
+		ent->action();
+	}
+
+	for (auto prj : mProjectiles)
+	{
+		prj->action();
 	}
 
 	CheckCollisions();
 	
 	if (CheckGameOver())
+	{
 		GameOver();
+	}
 	// обновить координаты врагов на основании их контроллеров
 	// можно параметризовать кривую, по которой они двигаются, чтобы они шли друг за другом паровозиком по зигзагу
 	// шахматный порядок или еще что, в зависимости от типа врага
@@ -104,11 +122,21 @@ void Game::CheckCollisions()
 	auto plPos = mPlayer1.getPosition();
 
 	// test of collisions with objects
-	for (auto ent : mBackgroundObjects)
+	/*for (auto ent : mBackgroundObjects)
 	{
 		if (mPlayer1.checkCollidedHitboxes(ent))
 		{
 			ent->collide();
+		}
+	}*/
+
+	for (auto ent : mBackgroundObjects)
+	{
+		auto prev_pos = ent->getPosition();
+		auto spSize = ent->getSpriteSize();
+		if (prev_pos.y > yWindow + 2 * spSize)
+		{
+			ent->setPosition(genRandomNumber(0, xWindow), genRandomNumber(-2*spSize, -spSize));
 		}
 	}
 
@@ -143,17 +171,13 @@ void Game::spawnNewEnemyWave()
 	}
 }
 
-void Game::spawnEntity()
+int Game::genRandomNumber(int a, int b)
 {
-	auto bcEnt = std::make_shared<Entity>(Vector2(mPlayer1.getPosition().x + 10, 10), EntityType::OBSTACLE, 0);
 
-	bcEnt->setOnCollision(
-		[this]()
-		{
-			std::cout << "collision occured with right one\n";
-			mPlayer1.recieveDamage(10);
-		}
-	);
-	mBackgroundObjects.push_back(bcEnt);
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> dist(a, b);
+
+	return dist(gen);
 }
 

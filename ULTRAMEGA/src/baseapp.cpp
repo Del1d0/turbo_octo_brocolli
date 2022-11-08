@@ -7,7 +7,7 @@ namespace app {
 GameApp::~GameApp() = default;
 
 void GameApp::Run() {
-  Initialize();
+  //Initialize();
 
   Uint32 time = SDL_GetTicks();
 

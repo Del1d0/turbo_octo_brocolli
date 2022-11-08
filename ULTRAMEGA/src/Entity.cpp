@@ -6,12 +6,32 @@ Entity::Entity(Vector2 coords, EntityType type, double speed) :
 	mSpeed(speed),
 	mType(type)
 {
+	mAction = Action::IDLE;
 	mDirection = Direction::NONE;
 }
 
 void Entity::action()
 {
+	movingAlgorithm();
+	switch (mAction)
+	{
+	case MOVE_UP:
+		mPos.y -= mSpeed;
+		break;
+	case MOVE_DOWN:
+		mPos.y += mSpeed;
+		break;
+	case MOVE_RIGHT:
+		mPos.x += mSpeed;
+		break;
+	case MOVE_LEFT:
+		mPos.x -= mSpeed;
+		break;
+	default:
+		return;
+	}
 
+	return;
 }
 
 void Entity::setOnCollision(std::function<void()> onCollide)
@@ -40,4 +60,10 @@ void Entity::recieveDamage(int dmg)
 		std::cout << "damage recieved\n";
 		hpVal -= dmg;
 	}
+}
+
+void Entity::movingAlgorithm()
+{
+	// basic background object behavior
+	mAction = MOVE_DOWN;
 }
