@@ -1,6 +1,6 @@
 #include "../include/Game.h"
 #include <iostream>
-#include <random>
+
 
 Game::Game(int winX, int winY, double plSpeed) :
 			xWindow(winX),
@@ -22,36 +22,49 @@ Game::Game(int winX, int winY) :
 
 void Game::Initialize()
 {
-
+	for (size_t i = 0; i < 4; i++)
+	{
+		render::LoadResource("resources/images/cloud" + std::to_string(i) + ".png");
+	}
+	render::LoadResource("resources/images/water.jpg");
 	render::LoadResource("resources/images/player.png"); // player
 	render::LoadResource("resources/images/slug.png"); // slug
 	render::LoadResource("resources/images/apple.png"); // enemy
 	
-	int numOfClouds = genRandomNumber(1, 8);
+	int numOfClouds = genRandomNumber(16, 32);
+	
+	std::vector<int> speeds(numOfClouds);
+	
+	for (size_t i = 0; i < numOfClouds; i++)
+		speeds[i] = genRandomNumber(CLOUDS_MIN_SPEED, CLOUDS_MAX_SPEED);
+	
+	std::sort(speeds.begin(), speeds.end());
 	
 	for (size_t i = 0; i < numOfClouds; i++)
 	{
-		auto pos = Vector2(genRandomNumber(5, xWindow), genRandomNumber(-50, -30));
-		mBackgroundObjects.push_back(spawnBackgroundObject(pos, genRandomNumber(1, 5)));
+		auto pos = Vector2(genRandomNumber(-10, xWindow+10), genRandomNumber(-150, -50));
+		mBackgroundObjects.push_back(spawnBackgroundObject(pos, speeds[i]));
 	}
 }
 
 void Game::Render()
 {
-
+	render::DrawImage("water.jpg", 0, 0, xWindow, yWindow);
+	
 	for (auto ent : mBackgroundObjects)
 	{
 		auto ePos = ent->getPosition();
-		render::DrawImage("apple.png", ePos.x, ePos.y, 64, 64);
+		auto dim = ent->getSpriteDimensions(); // sprite size
+		render::DrawImage("cloud"+std::to_string(ent->getTextureID())+".png", ePos.x, ePos.y, dim.x, dim.y);
 	}
 
 	for (auto proj : mProjectiles)
 	{
 		auto ePos = proj->getPosition();
-		render::DrawImage("slug.png", ePos.x, ePos.y, 16, 16);
+		render::DrawImage("slug.png", ePos.x, ePos.y, proj->getSpriteSize(), proj->getSpriteSize());
 	}
 	auto pos = mPlayer1.getPosition();
-	render::DrawImage("player.png", pos.x, pos.y, 64, 64);
+	render::DrawImage("player.png", pos.x, pos.y, mPlayer1.getSpriteSize(), mPlayer1.getSpriteSize());
 }
 
 void Game::ProcessInput(const Uint8* keyboard)
@@ -71,10 +84,13 @@ void Game::ProcessInput(const Uint8* keyboard)
 	if (keyboard[SDL_SCANCODE_DOWN] && !keyboard[SDL_SCANCODE_UP] && !(prevPos.y >= yWindow - 2*mPlayer1.getSpriteSize())) {
 		prevPos.y += speed * 1;
 	}
-	if (keyboard[SDL_SCANCODE_SPACE]) // косячно работает (нельзя лететь по диагонали и стрелять)
+	if (keyboard[SDL_SCANCODE_SPACE] && mPlayer1.isGunRDY()) // косячно работает (нельзя лететь по диагонали и стрелять)
 	{
 		auto pnt = std::make_shared<Entity>(static_cast<Entity>(mPlayer1));
 		mProjectiles.push_back(spawnProjectile(pnt));
+		// cool down
+		mPlayer1.setGunTime(SDL_GetTicks()); // setting time of last shot
+		mPlayer1.setGunRDY(false);
 	}
 
 	//assigning new position
@@ -84,6 +100,9 @@ void Game::ProcessInput(const Uint8* keyboard)
 void Game::Update(Uint32 millis)
 {
 	//std::cout << "Player position: x = " << mPlayer1.getPosition().x << "\t, y = " << mPlayer1.getPosition().y << std::endl;
+	Uint32 curTime = SDL_GetTicks();
+
+	mPlayer1.checkCoolDown(curTime);
 
 	for (auto ent : mBackgroundObjects)
 	{
@@ -105,12 +124,6 @@ void Game::Update(Uint32 millis)
 	// можно параметризовать кривую, по которой они двигаются, чтобы они шли друг за другом паровозиком по зигзагу
 	// шахматный порядок или еще что, в зависимости от типа врага
 
-	// обновить положения снарядов, ракет и прочего
-
-	// передвинуть облака и прочие фоновые объекты вниз
-	// столкновения с ними ничего не делают
-	// вообще проверяется столкновение только игрока со снарядами, либо снарадов с врагами (враги не наносят урона своим)
-
 	// передвинуть бонусы
 
 	// прострелять всем кому можно (вообще у каждого типа врага разное оружие и скорострельность, соответсвенно,
@@ -130,16 +143,34 @@ void Game::CheckCollisions()
 		}
 	}*/
 
+	// reposition clouds after they reach the edge of the screen
 	for (auto ent : mBackgroundObjects)
 	{
 		auto prev_pos = ent->getPosition();
-		auto spSize = ent->getSpriteSize();
-		if (prev_pos.y > yWindow + 2 * spSize)
+		auto spSize = ent->getSpriteDimensions();
+		if (prev_pos.y > yWindow + 2 * spSize.y)
 		{
-			ent->setPosition(genRandomNumber(0, xWindow), genRandomNumber(-2*spSize, -spSize));
+			ent->setPosition(genRandomNumber(0, xWindow), genRandomNumber(-2*spSize.y, -spSize.y));
+			int cloud = genRandomNumber(0, 3);
+			double factor = ent->getSpeed() / CLOUDS_MAX_SPEED;
+			int width = static_cast<int>(factor * genRandomNumber(250, 290));
+			int height = static_cast<int>(factor*genRandomNumber(90, 110));
+			
+			ent->setSpriteDimensions(Vector2(width, height));
+			ent->setTextureID(cloud);
 		}
 	}
-
+	
+	for (int i = 0; i < mProjectiles.size(); i++)
+	{
+		auto pos = mProjectiles[i]->getPosition();
+		if (checkBoundaryExit(pos, mProjectiles[i]->getHitboxSize()))
+		{
+			auto it = mProjectiles.begin() + i;
+			mProjectiles.erase(it);
+			--i;
+		}
+	}
 	// враги вышли за границы поля + длина врага? -> удалить его (вызвать деструктор? или просто удалить из массива?)
 
 	// проверяем попадание снаряда и пр. в область хитбокса игрока
@@ -171,13 +202,15 @@ void Game::spawnNewEnemyWave()
 	}
 }
 
-int Game::genRandomNumber(int a, int b)
+bool Game::checkBoundaryExit(Vector2& pos, double hitbox)
 {
-
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<> dist(a, b);
-
-	return dist(gen);
+	if (pos.x + hitbox >= xWindow ||
+		pos.x - hitbox <= 0       ||
+		pos.y + hitbox >= yWindow ||
+		pos.y - hitbox <= 0)
+	{
+		return true;
+	}
+	else
+		return false;
 }
-

@@ -1,5 +1,4 @@
 #include "baseapp.h"
-
 #include <SDL.h>
 
 namespace app {
@@ -29,7 +28,6 @@ void GameApp::Run() {
     }
 
     ProcessInput(SDL_GetKeyboardState(nullptr));
-
     SDL_SetRenderDrawColor(render::GetRenderer(), 255, 255, 255, 255);
     SDL_RenderClear(render::GetRenderer());
 
@@ -37,7 +35,7 @@ void GameApp::Run() {
 
     SDL_RenderPresent(render::GetRenderer());
 
-    SDL_Delay(1000 / 60);
+    SDL_Delay(REFRESH_RATE);
   }
 
   Free();

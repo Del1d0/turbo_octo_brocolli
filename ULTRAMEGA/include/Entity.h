@@ -82,6 +82,12 @@ public:
 	double getSpeed() const { return mSpeed; };
 	double getHitboxSize() const { return mHitboxSize; };
 	int getSpriteSize() const { return spriteSize; };
+	Vector2 getSpriteDimensions() const { return spriteDim; };
+	void setSpriteDimensions(const Vector2& newDim) { spriteDim = newDim; };
+
+	void setTextureID(const int id) { textureID = id; };
+	int getTextureID() const { return textureID; };
+
 	int getHP() const { return hpVal; };
 	EntityType getType() const { return mType; };
 	void recieveDamage(const int dmg);
@@ -92,8 +98,11 @@ protected:
 	Vector2 mPos; //позиция
 	Action mAction;
 	double mSpeed = 0; //скорость (возможно разная для разных осей)
-	double mHitboxSize = 40;
+	double mHitboxSize = 32;
 	int spriteSize = 32;
+	Vector2 spriteDim = Vector2(32, 32);
+	//for clouds
+	int textureID = 0;
 
 	int hpVal = 100;
 	int hpCapacity = 100;

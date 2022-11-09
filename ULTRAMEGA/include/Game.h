@@ -3,6 +3,7 @@
 #include "EnemyEntity.h"
 #include "EntityFactory.h"
 #include "../src/baseapp.h"
+#include "Constants.h"
 #include <vector>
 #include <memory>
 
@@ -46,5 +47,5 @@ private:
 
 	int nEnemies = 0;
 
-	int genRandomNumber(int a, int b);
+	bool checkBoundaryExit(Vector2& pos, double hitbox);
 };

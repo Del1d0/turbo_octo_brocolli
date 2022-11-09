@@ -1,6 +1,7 @@
 #pragma once
 #include "Entity.h"
 #include "Projectile.h"
+#include "Constants.h"
 
 
 class EntityFactory
