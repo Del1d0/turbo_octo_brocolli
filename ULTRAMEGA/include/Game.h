@@ -1,13 +1,14 @@
 #pragma once
 #include "Player.h"
 #include "EnemyEntity.h"
-#include "EntityFactory.h"
+#include "Projectile.h"
+//#include "EntityFactory.h"
 #include "../src/baseapp.h"
 #include "Constants.h"
 #include <vector>
 #include <memory>
 
-class Game: public EntityFactory, public app::GameApp //(содержит игрока, и вектор сущностей)
+class Game: public app::GameApp //, public EntityFactory
 {
 public:
 	Game() = delete;
@@ -28,7 +29,7 @@ public:
 	
 
 private:
-	void spawnNewEnemyWave(); // запускаем новую волну, если враги кончились
+	void SpawnNewEnemyWave(); // запускаем новую волну, если враги кончились
 
 	Player mPlayer1; // игрок
 	std::vector<std::shared_ptr<Entity>> mBackgroundObjects; // всякие объекты на карте, которые пролетают фоном (зациклить их просто при вылете за карту
@@ -47,5 +48,9 @@ private:
 
 	int nEnemies = 0;
 
-	bool checkBoundaryExit(Vector2& pos, double hitbox);
+	bool CheckBoundaryExit(Vector2& pos, double hitbox);
+
+	std::shared_ptr<Projectile> SpawnProjectile(std::shared_ptr<Entity> host);
+	std::shared_ptr<Entity> SpawnBackgroundObject(Vector2& position, double speed);
+	std::shared_ptr<EnemyEntity> SpawnEnemy(Vector2& position, EnemyType type);
 };

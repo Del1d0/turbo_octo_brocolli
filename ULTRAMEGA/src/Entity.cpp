@@ -6,13 +6,13 @@ Entity::Entity(Vector2 coords, EntityType type, double speed) :
 	mSpeed(speed),
 	mType(type)
 {
-	mAction = Action::IDLE;
+	mAction = ActionType::IDLE;
 	mDirection = Direction::NONE;
 }
 
-void Entity::action()
+void Entity::Action()
 {
-	movingAlgorithm();
+	MovingAlgorithm();
 	switch (mAction)
 	{
 	case MOVE_UP:
@@ -34,7 +34,7 @@ void Entity::action()
 	return;
 }
 
-void Entity::setOnCollision(std::function<void()> onCollide)
+void Entity::SetOnCollision(std::function<void()> onCollide)
 {
 	this->onCollision = onCollide;
 }
@@ -43,12 +43,12 @@ void Entity::collide()
 {
 	if (onCollision)
 	{
-		isCollided = true;
+		mIsCollided = true;
 		onCollision();
 	}
 }
 
-void Entity::recieveDamage(int dmg)
+void Entity::RecieveDamage(int dmg)
 {
 	if (shieldVal > 0)
 	{
@@ -62,8 +62,23 @@ void Entity::recieveDamage(int dmg)
 	}
 }
 
-void Entity::movingAlgorithm()
+void Entity::MovingAlgorithm()
 {
 	// basic background object behavior
 	mAction = MOVE_DOWN;
+}
+
+bool Entity::CheckCollidedHitboxes(const std::shared_ptr<Entity> other) const
+{
+	// check whether the player's hitbox crosses other's hitbox
+	auto entPos = other->GetPosition();
+	double hitBox = other->GetHitboxSize();
+
+	if ((mPos.x + mHitboxSize >= entPos.x - hitBox) &&
+		(mPos.x - mHitboxSize <= entPos.x + hitBox) &&
+		(mPos.y + mHitboxSize >= entPos.y - hitBox) &&
+		(mPos.y - mHitboxSize <= entPos.y + hitBox))
+		return true;
+	else
+		return false;
 }

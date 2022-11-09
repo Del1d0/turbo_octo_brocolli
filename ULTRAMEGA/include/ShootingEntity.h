@@ -15,25 +15,25 @@ class ShootingEntity : public Entity // управляемая стреляющая штука (враги, игр
 public:
 	ShootingEntity(Vector2 coords, EntityType type, double speed);
 	virtual ~ShootingEntity() {};
-	virtual void shoot() = 0; //стреляет на основе решения контроллера (человек, алгоритм)
+	virtual void Shoot() = 0; //стреляет на основе решения контроллера (человек, алгоритм)
 	
-	void checkCoolDown(Uint32 currTime);
+	void CheckCoolDown(Uint32 currTime);
 
-	bool isGunRDY() const { return gunRDY; };
-	bool isRocketRDY() const { return rocketRDY; };
-	bool isLaserRDY() const { return laserRDY; };
+	bool IsGunRDY() const { return gunRDY; };
+	bool IsRocketRDY() const { return rocketRDY; };
+	bool IsLaserRDY() const { return laserRDY; };
 
-	void setGunRDY(const bool status) { gunRDY = status; };
-	void setRocketRDY(const bool status) { rocketRDY = status; };
-	void setLaserRDY(const bool status) { laserRDY = status; };
+	void SetGunRDY(const bool status) { gunRDY = status; };
+	void SetRocketRDY(const bool status) { rocketRDY = status; };
+	void SetLaserRDY(const bool status) { laserRDY = status; };
 
-	bool getGunCoolDown() const { return gunCoolDown; };
-	bool getRocketCoolDown() const { return rocketCoolDown; };
-	bool getLaserCoolDown() const { return laserCoolDown; };
+	bool GetGunCoolDown() const { return gunCoolDown; };
+	bool GetRocketCoolDown() const { return rocketCoolDown; };
+	bool GetLaserCoolDown() const { return laserCoolDown; };
 
-	void setGunTime(const Uint32 time) { gunLastShotTime = time; };
-	void setRocketTime(const Uint32 time) { rocketLastShotTime = time; };
-	void setLaserTime(const Uint32 time) { laserLastShotTime = time; };
+	void SetGunTime(const Uint32 time) { gunLastShotTime = time; };
+	void SetRocketTime(const Uint32 time) { rocketLastShotTime = time; };
+	void SetLaserTime(const Uint32 time) { laserLastShotTime = time; };
 
 protected:
 	// cool down times in ms

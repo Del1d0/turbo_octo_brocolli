@@ -9,16 +9,15 @@ class Player : public ShootingEntity // (двигается, стреляет пушками, стреляет р
 public:
 	Player(Vector2 coords, double speed);
 	~Player() {};
-	void shoot() override;
-	void action() override;
+	void Shoot() override;
+	void Action() override;
 	
-	bool checkCollidedHitboxes(const std::shared_ptr<Entity> other) const;
-
+	void AddScore(const int sc) { score += sc; };
 
 private:
 	//завести enum с типом вооружения, чтобы знать, какое сейчас активно
 	int nRockets = 0; // боезапас ракет
 	int nLaserShots = 0; // боезапас
 	
-	
+	int score = 0;
 };

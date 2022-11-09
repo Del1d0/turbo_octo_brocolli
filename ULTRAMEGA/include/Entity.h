@@ -1,7 +1,7 @@
 #pragma once
 #include <functional>
 
-enum Action
+enum ActionType
 {
 	MOVE_UP,
 	MOVE_DOWN,
@@ -34,15 +34,6 @@ struct Vector2
 	double y = 0;
 };
 
-struct HitboxDimensions
-{
-	HitboxDimensions(int width, int height) :
-		width(width), height(height) {};
-	~HitboxDimensions() {};
-	int width = 1;
-	int height = 1;
-};
-
 enum Direction
 {
 	UP,
@@ -72,47 +63,57 @@ public:
 	Entity() = delete;
 	Entity(Vector2 coords, EntityType type, double speed = 0.1);
 	virtual ~Entity() {};
-	virtual void action(); //двигается контроллером (человек, алгоритм)
-	//снаряды летят по прямой, ракеты могут наводиться (?), лазеры по прямой, враги всяко разно (задать синусом или сплайном)
-	void setOnCollision(std::function<void()> onCollide);
-	void collide(); //взаимодействие с другими Entity при контакте
-	void setPosition(Vector2& coords) { mPos = coords; };
-	void setPosition(const int x, const int y) { mPos.x = x; mPos.y = y; };
-	Vector2 getPosition() const { return mPos; };
-	double getSpeed() const { return mSpeed; };
-	double getHitboxSize() const { return mHitboxSize; };
-	int getSpriteSize() const { return spriteSize; };
-	Vector2 getSpriteDimensions() const { return spriteDim; };
-	void setSpriteDimensions(const Vector2& newDim) { spriteDim = newDim; };
+	virtual void Action();
+	
+	void SetOnCollision(std::function<void()> onCollide);
+	void collide();
+	
+	void SetPosition(Vector2& coords) { mPos = coords; };
+	void SetPosition(const int x, const int y) { mPos.x = x; mPos.y = y; };
+	Vector2 GetPosition() const { return mPos; };
+	
+	double GetSpeed() const { return mSpeed; };
+	
+	double GetHitboxSize() const { return mHitboxSize; };
+	int GetSpriteSize() const { return spriteSize; };
+	Vector2 GetSpriteDimensions() const { return spriteDim; };
+	void SetSpriteDimensions(const Vector2& newDim) { spriteDim = newDim; };
 
-	void setTextureID(const int id) { textureID = id; };
-	int getTextureID() const { return textureID; };
+	void SetTextureID(const int id) { textureID = id; };
+	int GetTextureID() const { return textureID; };
+	void SetTextureName(const std::string newName) { textureName = newName; };
+	std::string GetTextureName() const { return textureName; };
 
-	int getHP() const { return hpVal; };
-	EntityType getType() const { return mType; };
-	void recieveDamage(const int dmg);
+	bool IsCollided() const { return mIsCollided; };
+
+	int GetHP() const { return hpVal; };
+	EntityType GetType() const { return mType; };
+	void RecieveDamage(const int dmg);
+	
+	bool CheckCollidedHitboxes(const std::shared_ptr<Entity> other) const;
 
 protected:
 	Direction mDirection;
 	EntityType mType = BACKGROUND;
 	Vector2 mPos; //позиция
-	Action mAction;
-	double mSpeed = 0; //скорость (возможно разная для разных осей)
+	ActionType mAction;
+	double mSpeed = 0;
 	double mHitboxSize = 32;
 	int spriteSize = 32;
 	Vector2 spriteDim = Vector2(32, 32);
-	//for clouds
-	int textureID = 0;
+	
+	int textureID = 0; //for clouds
+	std::string textureName;
 
-	int hpVal = 100;
-	int hpCapacity = 100;
-	int shieldVal = 50;
-	int shieldCapacity = 50;
+	int hpVal = 50;
+	int hpCapacity = 50;
+	int shieldVal = 0;
+	int shieldCapacity = 0;
 
-	virtual void movingAlgorithm();
+	virtual void MovingAlgorithm();
 
+	bool mIsCollided = false;
 private:
 	std::function<void()> onCollision;
-	bool isCollided = false;
 
 };

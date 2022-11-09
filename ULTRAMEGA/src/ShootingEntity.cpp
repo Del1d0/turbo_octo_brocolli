@@ -6,7 +6,7 @@ ShootingEntity::ShootingEntity(Vector2 coords, EntityType type, double speed) :
 	// cooldown time is dependent on entity type
 }
 
-void ShootingEntity::checkCoolDown(Uint32 currTime)
+void ShootingEntity::CheckCoolDown(Uint32 currTime)
 {
 	if ((currTime - gunLastShotTime) > gunCoolDown)
 	{

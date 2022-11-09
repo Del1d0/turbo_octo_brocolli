@@ -12,8 +12,17 @@ class EnemyEntity : public ShootingEntity // враги, стреляют в примерном направл
 // буду наследоваться от EnemyEntity для создания разных врагов (ракетные дроны, стреляющие дроны, босс ракетовоз с лазерами и прочим)
 {
 public:
-	void shoot() override;
-
+	EnemyEntity(Vector2& pos, EnemyType type);
+	void Shoot() override;
+	void RecieveDamage(const double dmg) { hpVal -= dmg; };
+	void Action() override;
+	
+	void setInitPhase(const double phase) { initPhase = phase; };
 protected:
+	void MovingAlgorithm() override;
+
 	int mDamage;
+private:
+	EnemyType mEnType;
+	double initPhase = 0;
 };

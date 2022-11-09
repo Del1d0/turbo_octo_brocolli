@@ -1,6 +1,6 @@
 #include "../include/Projectile.h"
 
-Projectile::Projectile(Vector2& pos, double speed) :
+Projectile::Projectile(Vector2& pos, double speed, bool plHost) :
 	Entity(pos, BULLET, speed)
 {
 	hpVal = 0;
@@ -11,7 +11,7 @@ Projectile::Projectile(Vector2& pos, double speed) :
 	mHitboxSize = 20;
 }
 
-void Projectile::movingAlgorithm()
+void Projectile::MovingAlgorithm()
 {
 	// basic background object behavior
 	mAction = MOVE_UP;

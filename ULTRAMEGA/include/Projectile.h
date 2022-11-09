@@ -3,7 +3,11 @@
 class Projectile : public Entity
 {
 public:
-	Projectile(Vector2& pos, double speed);
+	Projectile(Vector2& pos, double speed, bool plHost = false);
+	~Projectile() {};
+	bool IsShotByPlayer() const { return isPlayerHosted; };
 protected:
-	void movingAlgorithm() override;
+	void MovingAlgorithm() override;
+private:
+	bool isPlayerHosted = false;
 };
