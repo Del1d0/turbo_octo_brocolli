@@ -110,6 +110,11 @@ void Game::ProcessInput(const Uint8* keyboard)
 
 void Game::Update(Uint32 millis)
 {
+	if (mEnemies.size() == 0)
+	{
+		SpawnNewEnemyWave();
+	}
+	
 	//std::cout << "Player position: x = " << mPlayer1.GetPosition().x << "\t, y = " << mPlayer1.GetPosition().y << std::endl;
 	Uint32 curTime = SDL_GetTicks();
 
@@ -245,19 +250,13 @@ bool Game::CheckGameOver()
 void Game::SpawnNewEnemyWave()
 {
 	int numEnem = GenRandomNumber(10, 15);
-	if (mEnemies.size() == 0)
+	for (size_t i = 0; i < numEnem; i++)
 	{
-		for (size_t i = 0; i < numEnem; i++)
-		{
-			auto en = SpawnEnemy(Vector2(xWindow / 2.0, -50*(1 + i)), DRONE);
-			en->setInitPhase(2 * M_PI * i / numEnem);
-			mEnemies.push_back(en);
-		}
+		auto en = SpawnEnemy(Vector2(xWindow / 2.0, -50 * (1 + i)), DRONE);
+		en->setInitPhase(2 * M_PI * i / numEnem);
+		mEnemies.push_back(en);
 	}
-	else
-	{
-		return;
-	}
+	return;
 }
 
 bool Game::CheckBoundaryExit(Vector2& pos, double hitbox)

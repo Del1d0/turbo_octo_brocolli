@@ -24,12 +24,5 @@ void Projectile::collide(double dmg)
 
 void Projectile::MovingAlgorithm()
 {
-	if (!mIsCollided)
-	{
-		mAction = MOVE_UP;
-	}
-	else
-	{
-		mAction = MOVE_DOWN;
-	}
+	mAction = MOVE_UP;
 }
