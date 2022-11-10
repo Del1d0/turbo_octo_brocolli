@@ -66,7 +66,7 @@ public:
 	virtual void Action();
 	
 	void SetOnCollision(CollideCallback onCollide);
-	void collide(double dmg);
+	virtual void collide(double dmg);
 	
 	void SetPosition(Vector2& coords) { mPos = coords; };
 	void SetPosition(const int x, const int y) { mPos.x = x; mPos.y = y; };
@@ -113,7 +113,7 @@ protected:
 	virtual void MovingAlgorithm();
 
 	bool mIsCollided = false;
-private:
 	CollideCallback onCollision;
+private:
 
 };

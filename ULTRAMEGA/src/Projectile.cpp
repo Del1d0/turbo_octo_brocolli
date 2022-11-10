@@ -11,8 +11,25 @@ Projectile::Projectile(Vector2& pos, double speed, bool plHost) :
 	mHitboxSize = 20;
 }
 
+void Projectile::collide(double dmg)
+{
+	if (onCollision)
+	{
+		mIsCollided = true;
+		mSpeed /= 2;
+		timeOfCollision = SDL_GetTicks();
+		onCollision(dmg);
+	}
+}
+
 void Projectile::MovingAlgorithm()
 {
-	// basic background object behavior
-	mAction = MOVE_UP;
+	if (!mIsCollided)
+	{
+		mAction = MOVE_UP;
+	}
+	else
+	{
+		mAction = MOVE_DOWN;
+	}
 }

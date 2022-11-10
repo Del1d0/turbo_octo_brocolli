@@ -201,7 +201,10 @@ void Game::CheckCollisions()
 	for (int i = 0; i < mProjectiles.size(); i++)
 	{
 		auto pos = mProjectiles[i]->GetPosition();
-		if (CheckBoundaryExit(pos, mProjectiles[i]->GetHitboxSize()))
+		auto curTime = SDL_GetTicks();
+
+		if (CheckBoundaryExit(pos, mProjectiles[i]->GetHitboxSize()) ||
+			(mProjectiles[i]->IsCollided() && (curTime - mProjectiles[i]->GetTimeOfCollision()) > SLUG_EXPOLION_LIFETIME))
 		{
 			auto it = mProjectiles.begin() + i;
 			mProjectiles.erase(it);
@@ -319,7 +322,7 @@ std::shared_ptr<EnemyEntity> Game::SpawnEnemy(Vector2& position, EnemyType type)
 	enemy->SetOnCollision(
 		[enemy](double dmg)
 		{
-			std::cout << "10 damage recieved\t HP = " << enemy->GetHP() << std::endl;
+			std::cout << dmg << " damage recieved\t HP = " << enemy->GetHP() << std::endl;
 			enemy->RecieveDamage(dmg);
 		}
 	);

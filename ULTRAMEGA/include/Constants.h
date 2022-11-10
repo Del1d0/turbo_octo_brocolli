@@ -9,6 +9,8 @@ const int CLOUDS_MIN_SPEED = 2;
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 800;
 
+const int SLUG_EXPOLION_LIFETIME = 500;
+
 inline int GenRandomNumber(const int a, const int b)
 {
 	std::random_device rd;
