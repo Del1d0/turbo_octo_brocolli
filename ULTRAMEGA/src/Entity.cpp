@@ -34,17 +34,17 @@ void Entity::Action()
 	return;
 }
 
-void Entity::SetOnCollision(std::function<void()> onCollide)
+void Entity::SetOnCollision(CollideCallback onCollide)
 {
 	this->onCollision = onCollide;
 }
 
-void Entity::collide()
+void Entity::collide(double dmg)
 {
 	if (onCollision)
 	{
 		mIsCollided = true;
-		onCollision();
+		onCollision(dmg);
 	}
 }
 

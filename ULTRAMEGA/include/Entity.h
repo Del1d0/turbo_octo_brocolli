@@ -56,7 +56,7 @@ enum EntityType
 	OBSTACLE,
 	BACKGROUND
 };
-
+using CollideCallback = std::function<void(double)>;
 class Entity
 {
 public:
@@ -65,8 +65,8 @@ public:
 	virtual ~Entity() {};
 	virtual void Action();
 	
-	void SetOnCollision(std::function<void()> onCollide);
-	void collide();
+	void SetOnCollision(CollideCallback onCollide);
+	void collide(double dmg);
 	
 	void SetPosition(Vector2& coords) { mPos = coords; };
 	void SetPosition(const int x, const int y) { mPos.x = x; mPos.y = y; };
@@ -114,6 +114,6 @@ protected:
 
 	bool mIsCollided = false;
 private:
-	std::function<void()> onCollision;
+	CollideCallback onCollision;
 
 };

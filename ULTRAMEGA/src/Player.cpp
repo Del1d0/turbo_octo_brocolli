@@ -4,8 +4,8 @@
 Player::Player(Vector2 coords, double speed) :
 	ShootingEntity(coords, EntityType::PLAYER, speed)
 {
-	mHitboxSize = 32;
-	spriteSize = 32;
+	mHitboxSize = 64;
+	spriteSize = mHitboxSize;
 }
 
 void Player::Shoot()

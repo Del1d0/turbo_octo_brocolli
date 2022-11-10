@@ -57,21 +57,24 @@ void Game::Render()
 	{
 		auto ePos = ent->GetPosition();
 		auto dim = ent->GetSpriteDimensions(); // sprite size
-		render::DrawImage("cloud"+std::to_string(ent->GetTextureID())+".png", ePos.x, ePos.y, dim.x, dim.y);
+		render::DrawImage("cloud"+std::to_string(ent->GetTextureID())+".png", ePos.x - 0.5*dim.x, ePos.y - 0.5*dim.y, dim.x, dim.y);
 	}
 
 	for (auto enemy : mEnemies)
 	{
 		auto pos = enemy->GetPosition();
-		render::DrawImage("apple.png", pos.x, pos.y, enemy->GetSpriteSize(), enemy->GetSpriteSize());
+		double sp = enemy->GetSpriteSize();
+		render::DrawImage("apple.png", pos.x - 0.5*sp, pos.y - 0.5*sp, sp, sp);
 	}
 
 	auto pos = mPlayer1.GetPosition();
-	render::DrawImage("player.png", pos.x, pos.y, mPlayer1.GetSpriteSize(), mPlayer1.GetSpriteSize());
+	double spSize = mPlayer1.GetSpriteSize();
+	render::DrawImage("player.png", pos.x - spSize/2.0, pos.y - spSize/2.0, spSize, spSize);
 	for (auto proj : mProjectiles)
 	{
 		auto ePos = proj->GetPosition();
-		render::DrawImage(proj->GetTextureName(), ePos.x, ePos.y, proj->GetSpriteSize(), proj->GetSpriteSize());
+		double sp = proj->GetSpriteSize();
+		render::DrawImage(proj->GetTextureName(), ePos.x - 0.5*sp, ePos.y - 0.5*sp, sp, sp);
 	}
 }
 
@@ -80,7 +83,7 @@ void Game::ProcessInput(const Uint8* keyboard)
 	double speed = mPlayer1.GetSpeed();
 	auto prevPos = mPlayer1.GetPosition();
 
-	if (keyboard[SDL_SCANCODE_RIGHT] && !keyboard[SDL_SCANCODE_LEFT] && !(prevPos.x >= xWindow - 2*mPlayer1.GetSpriteSize())) {
+	if (keyboard[SDL_SCANCODE_RIGHT] && !keyboard[SDL_SCANCODE_LEFT] && !(prevPos.x >= xWindow)) {
 		prevPos.x += speed * 1;
 	}
 	if (keyboard[SDL_SCANCODE_LEFT] && !keyboard[SDL_SCANCODE_RIGHT] && !(prevPos.x <= 0)) {
@@ -89,7 +92,7 @@ void Game::ProcessInput(const Uint8* keyboard)
 	if (keyboard[SDL_SCANCODE_UP] && !keyboard[SDL_SCANCODE_DOWN] && !(prevPos.y <= 0)) {
 		prevPos.y -= speed * 1;
 	}
-	if (keyboard[SDL_SCANCODE_DOWN] && !keyboard[SDL_SCANCODE_UP] && !(prevPos.y >= yWindow - 2*mPlayer1.GetSpriteSize())) {
+	if (keyboard[SDL_SCANCODE_DOWN] && !keyboard[SDL_SCANCODE_UP] && !(prevPos.y >= yWindow)) {
 		prevPos.y += speed * 1;
 	}
 	if (keyboard[SDL_SCANCODE_SPACE] && mPlayer1.IsGunRDY()) // косячно работает (нельзя лететь по диагонали и стрелять)
@@ -164,8 +167,8 @@ void Game::CheckCollisions()
 			auto enemyPos = mEnemies[i]->GetPosition();
 			if (!prj->IsCollided() && prj->CheckCollidedHitboxes(mEnemies[i]))
 			{
-				prj->collide();
-				mEnemies[i]->collide();
+				prj->collide(0);
+				mEnemies[i]->collide(prj->GetDamageValue());
 				if (mEnemies[i]->GetHP() <= 0)
 				{
 					auto it = mEnemies.begin() + i;
@@ -287,7 +290,7 @@ std::shared_ptr<Projectile> Game::SpawnProjectile(std::shared_ptr<Entity> host)
 	auto projectile = std::make_shared<Projectile>(Vector2(host->GetPosition().x, host->GetPosition().y - 2), 10, owner);
 	projectile->SetTextureName("slug.png");
 	projectile->SetOnCollision(
-		[projectile]()
+		[projectile](double dmg)
 		{
 			std::cout << "SLUG has COLLIDED\n";
 			projectile->SetTextureName("explosion0.png");
@@ -314,10 +317,10 @@ std::shared_ptr<EnemyEntity> Game::SpawnEnemy(Vector2& position, EnemyType type)
 	auto enemy = std::make_shared<EnemyEntity>(position, type);
 
 	enemy->SetOnCollision(
-		[enemy]()
+		[enemy](double dmg)
 		{
 			std::cout << "10 damage recieved\t HP = " << enemy->GetHP() << std::endl;
-			enemy->RecieveDamage(10);
+			enemy->RecieveDamage(dmg);
 		}
 	);
 	return enemy;
