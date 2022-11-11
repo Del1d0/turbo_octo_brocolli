@@ -43,5 +43,5 @@ void EnemyEntity::MovingAlgorithm()
 	double amplitude = WINDOW_HEIGHT / 2.2;
 	double period = 8000;
 	mPos.x = WINDOW_WIDTH / 2.0 + amplitude* cos(2 * M_PI * time / period + initPhase);
-	mPos.y = -100*(2*initPhase/(2*M_PI)) + mSpeed * time / 50.0;
+	mPos.y = -100*(2*initPhase/(2*M_PI)) + mSpeed * time / 500.0;
 }

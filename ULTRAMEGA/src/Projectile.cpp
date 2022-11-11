@@ -19,10 +19,47 @@ void Projectile::collide(double dmg)
 		mSpeed /= 2;
 		timeOfCollision = SDL_GetTicks();
 		onCollision(dmg);
+		spriteSize *= 2;
 	}
+}
+
+int Projectile::GetCurrentFrame()
+{
+	auto curTime = SDL_GetTicks();
+	if (mIsCollided && (curTime - timeOfLastFrame) > SLUG_EXPOLION_LIFETIME/72.0)
+	{
+		timeOfLastFrame = curTime;
+		int frame = currentFrame;
+		currentFrame++;
+		if (currentFrame == 9)
+			currentFrame = 0;
+		return frame;
+	}
+	return currentFrame;
+}
+
+int Projectile::GetCurrentAnimationLine()
+{
+	if (mIsCollided)
+	{
+		if (currentFrame + 1 == 9)
+		{
+			int line = animationLine;
+			animationLine++;
+			if (animationLine + 1 == 8)
+				animationLine = 0;
+			currentFrame = 0;
+			return line;
+		}
+		return animationLine;
+	}
+	return animationLine;
 }
 
 void Projectile::MovingAlgorithm()
 {
-	mAction = MOVE_UP;
+	if (!mIsCollided)
+		mAction = MOVE_UP;
+	else
+		mAction = MOVE_DOWN;
 }

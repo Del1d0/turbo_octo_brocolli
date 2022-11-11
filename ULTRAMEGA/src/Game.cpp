@@ -32,10 +32,23 @@ void Game::Initialize()
 	render::LoadResource("resources/images/explosion0.png");
 	render::LoadResource("resources/images/apple.png"); // enemy
 	
+	auto explosionAtlas = render::Atlas::Create("resources/images/explosions_sprite0.png", "explosion0");
+	int wid = 91;
+	int hei = 93;
+	explosionAtlas.AddAnimationLine("0").SetFramesCount(9, false).SetFrameHeight(wid).SetFrameWidth(hei);
+	explosionAtlas.AddAnimationLine("1").SetFramesCount(9, false).SetFrameHeight(wid).SetFrameWidth(hei);
+	explosionAtlas.AddAnimationLine("2").SetFramesCount(9, false).SetFrameHeight(wid).SetFrameWidth(hei);
+	explosionAtlas.AddAnimationLine("3").SetFramesCount(9, false).SetFrameHeight(wid).SetFrameWidth(hei);
+	explosionAtlas.AddAnimationLine("4").SetFramesCount(9, false).SetFrameHeight(wid).SetFrameWidth(hei);
+	explosionAtlas.AddAnimationLine("5").SetFramesCount(9, false).SetFrameHeight(wid).SetFrameWidth(hei);
+	explosionAtlas.AddAnimationLine("6").SetFramesCount(9, false).SetFrameHeight(wid).SetFrameWidth(hei);
+	explosionAtlas.AddAnimationLine("7").SetFramesCount(9, false).SetFrameHeight(wid).SetFrameWidth(hei);
+	explosionAtlas.AddAnimationLine("9").SetFramesCount(9, false).SetFrameHeight(wid).SetFrameWidth(hei);
+	render::BakeAtlas(explosionAtlas);
+
+
 	int numOfClouds = GenRandomNumber(16, 32);
-	
 	std::vector<int> speeds(numOfClouds);
-	
 	for (size_t i = 0; i < numOfClouds; i++)
 		speeds[i] = GenRandomNumber(CLOUDS_MIN_SPEED, CLOUDS_MAX_SPEED);
 	
@@ -74,7 +87,11 @@ void Game::Render()
 	{
 		auto ePos = proj->GetPosition();
 		double sp = proj->GetSpriteSize();
-		render::DrawImage(proj->GetTextureName(), ePos.x - 0.5*sp, ePos.y - 0.5*sp, sp, sp);
+		if(proj->IsCollided())
+			render::DrawImageFromAtlas(proj->GetTextureName(), std::to_string(proj->GetCurrentAnimationLine()),
+				proj->GetCurrentFrame(), ePos.x - 0.5 * sp, ePos.y - 0.5 * sp, sp, sp);
+		else
+			render::DrawImage(proj->GetTextureName(), ePos.x - 0.5*sp, ePos.y - 0.5*sp, sp, sp);
 	}
 }
 
@@ -295,7 +312,7 @@ std::shared_ptr<Projectile> Game::SpawnProjectile(std::shared_ptr<Entity> host)
 		[projectile](double dmg)
 		{
 			std::cout << "SLUG has COLLIDED\n";
-			projectile->SetTextureName("explosion0.png");
+			projectile->SetTextureName("explosion0");
 		}
 	);
 

@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "EnemyEntity.h"
 #include "Projectile.h"
+#include "atlas.h"
 //#include "EntityFactory.h"
 #include "../src/baseapp.h"
 #include "Constants.h"
