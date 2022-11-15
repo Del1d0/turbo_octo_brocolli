@@ -11,6 +11,7 @@ public:
 
 	bool IsShotByPlayer() const { return isPlayerHosted; };
 	double GetDamageValue() const { return mDamage; };
+	void SetDamageValue(double value) { mDamage = value; };
 	
 	Uint32 GetTimeOfCollision() const { return timeOfCollision; };
 	
@@ -18,7 +19,7 @@ public:
 	int GetCurrentAnimationLine();
 protected:
 	void MovingAlgorithm() override;
-	double mDamage = 50;
+	double mDamage = 10;
 	bool isPlayerHosted = false;
 	Uint32 timeOfCollision = 0;
 	

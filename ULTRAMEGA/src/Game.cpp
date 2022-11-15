@@ -115,7 +115,9 @@ void Game::ProcessInput(const Uint8* keyboard)
 	if (keyboard[SDL_SCANCODE_SPACE] && mPlayer1.IsGunRDY()) // косячно работает (нельзя лететь по диагонали и стрелять)
 	{
 		auto pnt = std::make_shared<Entity>(static_cast<Entity>(mPlayer1));
-		mProjectiles.push_back(SpawnProjectile(pnt));
+		auto prj = SpawnProjectile(pnt);
+		prj->SetDamageValue(mPlayer1.GetBulletDamage());
+		mProjectiles.push_back(prj);
 		// cool down
 		mPlayer1.SetGunTime(SDL_GetTicks()); // Setting time of last shot
 		mPlayer1.SetGunRDY(false);
@@ -129,10 +131,10 @@ void Game::Update(Uint32 millis)
 {
 	if (mEnemies.size() == 0)
 	{
-		//SpawnNewEnemyWave();
-		auto en = SpawnEnemy(Vector2(xWindow / 2.0, 400), DRONE);
+ 		SpawnNewEnemyWave();
+		/*auto en = SpawnEnemy(Vector2(xWindow / 2.0, 400), DRONE);
 		en->setInitPhase(0);
-		mEnemies.push_back(en);
+		mEnemies.push_back(en);*/
 	}
 	
 	//std::cout << "Player position: x = " << mPlayer1.GetPosition().x << "\t, y = " << mPlayer1.GetPosition().y << std::endl;
@@ -153,6 +155,14 @@ void Game::Update(Uint32 millis)
 	for (auto enm : mEnemies)
 	{
 		enm->Action();
+		if (enm->IsGunRDY())
+		{
+			enm->SetGunRDY(false);
+			enm->SetGunTime(SDL_GetTicks());
+			auto ptr = SpawnProjectile(enm);
+			ptr->SetDamageValue(enm->GetBulletDamage());
+			mProjectiles.push_back(ptr);
+		}
 	}
 
 	CheckCollisions();
@@ -186,21 +196,34 @@ void Game::CheckCollisions()
 
 	for (auto prj : mProjectiles)
 	{
-		auto prjPos = prj->GetPosition();
-		for (int i = 0; i < mEnemies.size(); i++)
+		// collision with player
+		if (!prj->IsShotByPlayer())
 		{
-			auto enemyPos = mEnemies[i]->GetPosition();
-			if (!prj->IsCollided() && prj->CheckCollidedHitboxes(mEnemies[i]))
+			auto ptr = std::make_shared<Entity>(mPlayer1);
+			if (!prj->IsCollided() && prj->CheckCollidedHitboxes(ptr))
 			{
 				prj->collide(0);
-				mEnemies[i]->collide(prj->GetDamageValue());
-				if (mEnemies[i]->GetHP() <= 0)
+				ptr->collide(prj->GetDamageValue());
+			}
+		}
+		else
+		{
+			auto prjPos = prj->GetPosition();
+			for (int i = 0; i < mEnemies.size(); i++)
+			{
+				auto enemyPos = mEnemies[i]->GetPosition();
+				if (!prj->IsCollided() && prj->CheckCollidedHitboxes(mEnemies[i]))
 				{
-					auto it = mEnemies.begin() + i;
-					mEnemies.erase(it);
-					--i;
+					prj->collide(0);
+					mEnemies[i]->collide(prj->GetDamageValue());
+					if (mEnemies[i]->GetHP() <= 0)
+					{
+						auto it = mEnemies.begin() + i;
+						mEnemies.erase(it);
+						--i;
+					}
+					break;
 				}
-				break;
 			}
 		}
 	}
@@ -285,7 +308,7 @@ std::pair<int, EnemyType> Game::EnemyWaveLogic()
 	if (nLightDroneWaves < 5)
 	{
 		waveParams.second = DRONE;
-		waveParams.first = 1; //
+		waveParams.first = 2 + nLightDroneWaves*(nLightDroneWaves - 1); // 
 		nLightDroneWaves += 1;
 	}
 	else if (nHeavyDroneWaves == 0 && nLightDroneWaves > 5)
@@ -301,17 +324,17 @@ std::pair<int, EnemyType> Game::EnemyWaveLogic()
 		{
 		case 0:
 			waveParams.second = DRONE;
-			waveParams.first = 1;
+			waveParams.first = 1; // 
 			nLightDroneWaves += 1;
 			break;
 		case 1:
 			waveParams.second = HEAVYDRONE;
-			waveParams.first = 1;
+			waveParams.first = 1; // 
 			nHeavyDroneWaves += 1;
 			break;
 		default:
 			waveParams.second = DRONE;
-			waveParams.first = 1;
+			waveParams.first = 1; // 
 			nLightDroneWaves += 1;
 			break;
 		}
@@ -319,7 +342,7 @@ std::pair<int, EnemyType> Game::EnemyWaveLogic()
 	else
 	{
 		waveParams.second = DRONE;
-		waveParams.first = 1;
+		waveParams.first = 1; // 
 		nLightDroneWaves += 1;
 	}
 	return waveParams;

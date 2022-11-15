@@ -6,6 +6,18 @@ Player::Player(Vector2 coords, double speed) :
 {
 	mHitboxSize = 64;
 	spriteSize = mHitboxSize;
+	onCollision =
+		[this](double dmg)
+		{
+			std::cout << dmg << " Player damage recieved\t HP = " << this->GetHP() << std::endl;
+			this->RecieveDamage(dmg);
+		};
+
+	hpVal = 100;
+	hpCapacity = 100;
+	shieldVal = 40;
+	shieldCapacity = 40;
+	mBulletDamage = 40;
 }
 
 void Player::Shoot()

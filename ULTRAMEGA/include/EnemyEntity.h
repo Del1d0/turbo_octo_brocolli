@@ -21,7 +21,6 @@ public:
 protected:
 	void MovingAlgorithm() override;
 
-	int mDamage;
 private:
 	EnemyType mEnType;
 	double initPhase = 0;

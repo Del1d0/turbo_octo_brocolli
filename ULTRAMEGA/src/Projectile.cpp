@@ -1,7 +1,7 @@
 #include "../include/Projectile.h"
 
 Projectile::Projectile(Vector2& pos, double speed, bool plHost) :
-	Entity(pos, BULLET, speed)
+	Entity(pos, BULLET, speed), isPlayerHosted(plHost)
 {
 	hpVal = 0;
 	hpCapacity = 0;
@@ -59,7 +59,15 @@ int Projectile::GetCurrentAnimationLine()
 void Projectile::MovingAlgorithm()
 {
 	if (!mIsCollided)
-		mAction = MOVE_UP;
+	{
+		if (isPlayerHosted)
+			mAction = MOVE_UP;
+		else
+			mAction = MOVE_DOWN;
+	}
 	else
+	{
 		mAction = MOVE_DOWN;
+	}
+
 }

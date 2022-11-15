@@ -35,6 +35,10 @@ public:
 	void SetRocketTime(const Uint32 time) { rocketLastShotTime = time; };
 	void SetLaserTime(const Uint32 time) { laserLastShotTime = time; };
 
+	int GetBulletDamage() const { return mBulletDamage; };
+	int GetRocketDamage() const { return mRocketDamage; };
+	int GetLaserDamage() const { return mLaserDamage; };
+
 protected:
 	// cool down times in ms
 	int gunCoolDown = 200;
@@ -51,4 +55,8 @@ protected:
 	bool gunRDY = true;
 	bool rocketRDY = true;
 	bool laserRDY = true;
+
+	int mBulletDamage = 20;
+	int mRocketDamage = 100;
+	int mLaserDamage = 100;
 };
