@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include "../src/baseapp.h"
 
 enum ActionType
 {
@@ -75,6 +76,7 @@ public:
 	double GetSpeed() const { return mSpeed; };
 	
 	double GetHitboxSize() const { return mHitboxSize; };
+	Vector2 GetHitboxDimensions() const { return mHitboxDim; };
 	int GetSpriteSize() const { return spriteSize; };
 	Vector2 GetSpriteDimensions() const { return spriteDim; };
 	void SetSpriteDimensions(const Vector2& newDim) { spriteDim = newDim; };
@@ -99,8 +101,9 @@ protected:
 	ActionType mAction;
 	double mSpeed = 0;
 	double mHitboxSize = 32;
+	Vector2 mHitboxDim = Vector2(mHitboxSize, mHitboxSize);
 	int spriteSize = 32;
-	Vector2 spriteDim = Vector2(32, 32);
+	Vector2 spriteDim = Vector2(spriteSize, spriteSize);
 	
 	int textureID = 0; //for clouds
 	std::string textureName;
@@ -111,6 +114,7 @@ protected:
 	int shieldCapacity = 0;
 
 	virtual void MovingAlgorithm();
+	Uint32 mSpawnTime = 0;
 
 	bool mIsCollided = false;
 	CollideCallback onCollision;

@@ -47,7 +47,11 @@ private:
 	int yWindow; // размеры игрового поля (поле отрисовки), за которое нельзя вылетать (упираемся в невидимые стены)
 				 // враги умирают при вылете за yWindow + длина хитбокса (чтобы не было видно, как они удаляются)
 
+	std::pair<int,EnemyType> EnemyWaveLogic(); // decides what enemy wave should be next
 	int nEnemies = 0;
+	int nLightDroneWaves = 0;
+	int nHeavyDroneWaves = 0;
+	Uint32 mTimeOfLastEnemyWave = 0;
 
 	bool CheckBoundaryExit(Vector2& pos, double hitbox);
 

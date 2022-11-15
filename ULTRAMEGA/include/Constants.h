@@ -9,7 +9,9 @@ const int CLOUDS_MIN_SPEED = 2;
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 800;
 
-const int SLUG_EXPOLION_LIFETIME = 2000;
+const int SLUG_EXPOLION_LIFETIME = 1900;
+
+const int ENEMY_WAVE_COOLDOWN = 1500; // time between enemy waves
 
 inline int GenRandomNumber(const int a, const int b)
 {

@@ -25,4 +25,5 @@ protected:
 private:
 	EnemyType mEnType;
 	double initPhase = 0;
+	
 };

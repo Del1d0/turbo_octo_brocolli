@@ -6,6 +6,7 @@ Entity::Entity(Vector2 coords, EntityType type, double speed) :
 	mSpeed(speed),
 	mType(type)
 {
+	mSpawnTime = SDL_GetTicks();
 	mAction = ActionType::IDLE;
 	mDirection = Direction::NONE;
 }
@@ -73,11 +74,12 @@ bool Entity::CheckCollidedHitboxes(const std::shared_ptr<Entity> other) const
 	// check whether the player's hitbox crosses other's hitbox
 	auto entPos = other->GetPosition();
 	double hitBox = other->GetHitboxSize();
+	auto hb = other->GetHitboxDimensions();
 
-	if ((mPos.x + mHitboxSize >= entPos.x - hitBox) &&
-		(mPos.x - mHitboxSize <= entPos.x + hitBox) &&
-		(mPos.y + mHitboxSize >= entPos.y - hitBox) &&
-		(mPos.y - mHitboxSize <= entPos.y + hitBox))
+	if ((mPos.x + mHitboxDim.x/2 >= entPos.x - hb.x/2) &&
+		(mPos.x - mHitboxDim.x/2 <= entPos.x + hb.x/2) &&
+		(mPos.y + mHitboxDim.y/2 >= entPos.y - hb.y/2) &&
+		(mPos.y - mHitboxDim.y/2 <= entPos.y + hb.y/2))
 		return true;
 	else
 		return false;

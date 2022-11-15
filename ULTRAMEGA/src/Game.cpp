@@ -27,10 +27,10 @@ void Game::Initialize()
 		render::LoadResource("resources/images/cloud" + std::to_string(i) + ".png");
 	}
 	render::LoadResource("resources/images/water.jpg");
-	render::LoadResource("resources/images/player.png"); // player
+	render::LoadResource("resources/images/player1.png"); // player
 	render::LoadResource("resources/images/slug.png"); // slug
 	render::LoadResource("resources/images/explosion0.png");
-	render::LoadResource("resources/images/apple.png"); // enemy
+	render::LoadResource("resources/images/lightDrone.png"); // enemy
 	
 	auto explosionAtlas = render::Atlas::Create("resources/images/explosions_sprite0.png", "explosion0");
 	int wid = 91;
@@ -76,20 +76,20 @@ void Game::Render()
 	for (auto enemy : mEnemies)
 	{
 		auto pos = enemy->GetPosition();
-		double sp = enemy->GetSpriteSize();
-		render::DrawImage("apple.png", pos.x - 0.5*sp, pos.y - 0.5*sp, sp, sp);
+		auto spDim = enemy->GetSpriteDimensions();
+		render::DrawImage("lightDrone.png", pos.x - 0.5*spDim.x, pos.y - 0.5*spDim.y, spDim.x, spDim.y);
 	}
 
 	auto pos = mPlayer1.GetPosition();
 	double spSize = mPlayer1.GetSpriteSize();
-	render::DrawImage("player.png", pos.x - spSize/2.0, pos.y - spSize/2.0, spSize, spSize);
+	render::DrawImage("player1.png", pos.x - spSize/2.0, pos.y - spSize/2.0, spSize, spSize);
 	for (auto proj : mProjectiles)
 	{
 		auto ePos = proj->GetPosition();
 		double sp = proj->GetSpriteSize();
 		if(proj->IsCollided())
 			render::DrawImageFromAtlas(proj->GetTextureName(), std::to_string(proj->GetCurrentAnimationLine()),
-				proj->GetCurrentFrame(), ePos.x - 0.5 * sp, ePos.y - 0.5 * sp, sp, sp);
+				proj->GetCurrentFrame(), ePos.x - 0.5 * sp, ePos.y - 1.5 * sp, sp, sp);
 		else
 			render::DrawImage(proj->GetTextureName(), ePos.x - 0.5*sp, ePos.y - 0.5*sp, sp, sp);
 	}
@@ -129,7 +129,10 @@ void Game::Update(Uint32 millis)
 {
 	if (mEnemies.size() == 0)
 	{
-		SpawnNewEnemyWave();
+		//SpawnNewEnemyWave();
+		auto en = SpawnEnemy(Vector2(xWindow / 2.0, 400), DRONE);
+		en->setInitPhase(0);
+		mEnemies.push_back(en);
 	}
 	
 	//std::cout << "Player position: x = " << mPlayer1.GetPosition().x << "\t, y = " << mPlayer1.GetPosition().y << std::endl;
@@ -266,14 +269,60 @@ bool Game::CheckGameOver()
 
 void Game::SpawnNewEnemyWave()
 {
-	int numEnem = GenRandomNumber(10, 15);
-	for (size_t i = 0; i < numEnem; i++)
+	auto logic = EnemyWaveLogic(); // number of enemies in wave and the type of enemy
+	for (size_t i = 0; i < logic.first; i++)
 	{
-		auto en = SpawnEnemy(Vector2(xWindow / 2.0, -50 * (1 + i)), DRONE);
-		en->setInitPhase(2 * M_PI * i / numEnem);
+		auto en = SpawnEnemy(Vector2(xWindow / 2.0, -100 * (1 + i)), logic.second);
+		en->setInitPhase(2 * M_PI * i / logic.first);
 		mEnemies.push_back(en);
 	}
 	return;
+}
+
+std::pair<int, EnemyType> Game::EnemyWaveLogic()
+{
+	std::pair<int, EnemyType> waveParams;
+	if (nLightDroneWaves < 5)
+	{
+		waveParams.second = DRONE;
+		waveParams.first = 1; //
+		nLightDroneWaves += 1;
+	}
+	else if (nHeavyDroneWaves == 0 && nLightDroneWaves > 5)
+	{
+		waveParams.second = HEAVYDRONE;
+		waveParams.first = 1; // 
+		nHeavyDroneWaves += 1;
+	}
+	else if (nHeavyDroneWaves < 5 && nLightDroneWaves < 10)
+	{
+		int type = GenRandomNumber(0, 1);
+		switch (type)
+		{
+		case 0:
+			waveParams.second = DRONE;
+			waveParams.first = 1;
+			nLightDroneWaves += 1;
+			break;
+		case 1:
+			waveParams.second = HEAVYDRONE;
+			waveParams.first = 1;
+			nHeavyDroneWaves += 1;
+			break;
+		default:
+			waveParams.second = DRONE;
+			waveParams.first = 1;
+			nLightDroneWaves += 1;
+			break;
+		}
+	}
+	else
+	{
+		waveParams.second = DRONE;
+		waveParams.first = 1;
+		nLightDroneWaves += 1;
+	}
+	return waveParams;
 }
 
 bool Game::CheckBoundaryExit(Vector2& pos, double hitbox)
