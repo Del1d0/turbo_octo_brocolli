@@ -9,7 +9,7 @@ EnemyEntity::EnemyEntity(Vector2& pos, EnemyType type) :
 	switch (mEnType)
 	{
 	case DRONE:
-		hpCapacity = 500;
+		hpCapacity = 100;
 		hpVal = hpCapacity;
 		mBulletDamage = 10;
 		mSpeed = 0.03;
@@ -49,8 +49,8 @@ void EnemyEntity::MovingAlgorithm()
 	{
 		gunRDY = true;
 	}
-	double amplitude = WINDOW_HEIGHT / 2.2;
-	double period = 8000;
+	double amplitude = WINDOW_HEIGHT / 3.2;
+	double period = 10000;
 	mPos.x = WINDOW_WIDTH / 2.0 + amplitude* cos(2 * M_PI * (time - mSpawnTime) / period + initPhase);
 	mPos.y = -50 -200*(2*initPhase/(2*M_PI)) + mSpeed * (time - mSpawnTime);
 }

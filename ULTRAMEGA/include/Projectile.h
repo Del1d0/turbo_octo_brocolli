@@ -15,17 +15,11 @@ public:
 	
 	Uint32 GetTimeOfCollision() const { return timeOfCollision; };
 	
-	int GetCurrentFrame();
-	int GetCurrentAnimationLine();
+	
 protected:
 	void MovingAlgorithm() override;
 	double mDamage = 10;
 	bool isPlayerHosted = false;
 	Uint32 timeOfCollision = 0;
-	
-	// for animation
-	int currentFrame = 0; // 0 - 8
-	int animationLine = 0;
-	Uint32 timeOfLastFrame = 0;
 private:
 };

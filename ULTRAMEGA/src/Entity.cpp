@@ -63,6 +63,39 @@ void Entity::RecieveDamage(int dmg)
 	}
 }
 
+int Entity::GetCurrentFrame()
+{
+	auto curTime = SDL_GetTicks();
+	if (mIsCollided && (curTime - timeOfLastFrame) > SLUG_EXPOLION_LIFETIME / 72.0)
+	{
+		timeOfLastFrame = curTime;
+		int frame = currentFrame;
+		currentFrame++;
+		if (currentFrame == framesInLine)
+			currentFrame = 0;
+		return frame;
+	}
+	return currentFrame;
+}
+
+int Entity::GetCurrentAnimationLine()
+{
+	if (mIsCollided)
+	{
+		if (currentFrame + 1 == framesInLine)
+		{
+			int line = animationLine;
+			animationLine++;
+			if (animationLine + 1 == totalLines)
+				animationLine = 0;
+			currentFrame = 0;
+			return line;
+		}
+		return animationLine;
+	}
+	return animationLine;
+}
+
 void Entity::MovingAlgorithm()
 {
 	// basic background object behavior

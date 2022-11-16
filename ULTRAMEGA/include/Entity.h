@@ -85,6 +85,9 @@ public:
 	int GetTextureID() const { return textureID; };
 	void SetTextureName(const std::string newName) { textureName = newName; };
 	std::string GetTextureName() const { return textureName; };
+	// for animation
+	int GetCurrentFrame();
+	int GetCurrentAnimationLine();
 
 	bool IsCollided() const { return mIsCollided; };
 
@@ -93,6 +96,8 @@ public:
 	void RecieveDamage(const int dmg);
 	
 	bool CheckCollidedHitboxes(const std::shared_ptr<Entity> other) const;
+
+
 
 protected:
 	Direction mDirection;
@@ -107,6 +112,12 @@ protected:
 	
 	int textureID = 0; //for clouds
 	std::string textureName;
+	// animation
+	int currentFrame = 0; // 0 - 8
+	int framesInLine = 0;
+	int animationLine = 0;
+	int totalLines = 0;
+	Uint32 timeOfLastFrame = 0;
 
 	int hpVal = 50;
 	int hpCapacity = 50;

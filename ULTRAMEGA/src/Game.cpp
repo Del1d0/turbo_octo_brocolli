@@ -89,7 +89,7 @@ void Game::Render()
 		double sp = proj->GetSpriteSize();
 		if(proj->IsCollided())
 			render::DrawImageFromAtlas(proj->GetTextureName(), std::to_string(proj->GetCurrentAnimationLine()),
-				proj->GetCurrentFrame(), ePos.x - 0.5 * sp, ePos.y - 1.5 * sp, sp, sp);
+				proj->GetCurrentFrame(), ePos.x - 0.5 * sp, ePos.y - 0.5 * sp, sp, sp);
 		else
 			render::DrawImage(proj->GetTextureName(), ePos.x - 0.5*sp, ePos.y - 0.5*sp, sp, sp);
 	}
@@ -350,10 +350,10 @@ std::pair<int, EnemyType> Game::EnemyWaveLogic()
 
 bool Game::CheckBoundaryExit(Vector2& pos, double hitbox)
 {
-	if (pos.x - hitbox >= xWindow ||
-		pos.x + hitbox <= 0       ||
-		pos.y - hitbox >= yWindow ||
-		pos.y + hitbox <= 0)
+	if (pos.x - 2*hitbox >= xWindow ||
+		pos.x + 2*hitbox <= 0       ||
+		pos.y - 3*hitbox >= yWindow ||
+		pos.y + 2*hitbox <= 0)
 	{
 		return true;
 	}
