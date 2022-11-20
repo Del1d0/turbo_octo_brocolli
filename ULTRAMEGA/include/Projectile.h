@@ -21,5 +21,9 @@ protected:
 	double mDamage = 10;
 	bool isPlayerHosted = false;
 	Uint32 timeOfCollision = 0;
+
+	int GetCurrentFrame() override;
+	int GetCurrentAnimationLine() override;
+
 private:
 };

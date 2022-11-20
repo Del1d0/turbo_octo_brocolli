@@ -85,9 +85,10 @@ public:
 	int GetTextureID() const { return textureID; };
 	void SetTextureName(const std::string newName) { textureName = newName; };
 	std::string GetTextureName() const { return textureName; };
+	
 	// for animation
-	int GetCurrentFrame();
-	int GetCurrentAnimationLine();
+	virtual int GetCurrentFrame() = 0;
+	virtual int GetCurrentAnimationLine() = 0;
 
 	bool IsCollided() const { return mIsCollided; };
 
@@ -105,6 +106,7 @@ protected:
 	Vector2 mPos; //позиция
 	ActionType mAction;
 	double mSpeed = 0;
+
 	double mHitboxSize = 32;
 	Vector2 mHitboxDim = Vector2(mHitboxSize, mHitboxSize);
 	int spriteSize = 32;
@@ -113,10 +115,10 @@ protected:
 	int textureID = 0; //for clouds
 	std::string textureName;
 	// animation
-	int currentFrame = 0; // 0 - 8
-	int framesInLine = 0;
-	int animationLine = 0;
-	int totalLines = 0;
+	int currentFrame = 0; // current frame in line
+	int framesInLine = 0; // total number of frames in line
+	int animationLine = 0; // current line in sprite sheet
+	int totalLines = 0; // total number of lines in sprite sheet
 	Uint32 timeOfLastFrame = 0;
 
 	int hpVal = 50;
@@ -124,7 +126,7 @@ protected:
 	int shieldVal = 0;
 	int shieldCapacity = 0;
 
-	virtual void MovingAlgorithm();
+	virtual void MovingAlgorithm(); // moving algorithm
 	Uint32 mSpawnTime = 0;
 
 	bool mIsCollided = false;
