@@ -21,7 +21,7 @@ struct Vector2
 	Vector2(const Vector2& other) : x(other.x), y(other.y) {};
 	~Vector2() {};
 
-	Vector2 operator+(Vector2 other)
+	Vector2 operator+(Vector2& other)
 	{
 		return Vector2(this->x + other.x, this->y + other.y);
 	}
@@ -87,8 +87,10 @@ public:
 	std::string GetTextureName() const { return textureName; };
 	
 	// for animation
-	virtual int GetCurrentFrame() = 0;
-	virtual int GetCurrentAnimationLine() = 0;
+	virtual int GetCurrentFrame() { return currentFrame; };
+	virtual int GetCurrentAnimationLine() { return animationLine; };
+	void SetUsingAnimation(const bool state) { isUsingAnimation = state; };
+	bool GetUsingAnimation() const { return isUsingAnimation; };
 
 	bool IsCollided() const { return mIsCollided; };
 
@@ -120,6 +122,7 @@ protected:
 	int animationLine = 0; // current line in sprite sheet
 	int totalLines = 0; // total number of lines in sprite sheet
 	Uint32 timeOfLastFrame = 0;
+	bool isUsingAnimation = false;
 
 	int hpVal = 50;
 	int hpCapacity = 50;

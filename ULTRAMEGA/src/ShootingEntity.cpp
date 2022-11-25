@@ -8,13 +8,14 @@ ShootingEntity::ShootingEntity(Vector2 coords, EntityType type, double speed) :
 
 void ShootingEntity::CheckCoolDown(Uint32 currTime)
 {
-	if ((currTime - gunLastShotTime) > gunCoolDown)
+	if (!gunRDY && (currTime - gunLastShotTime) > gunCoolDown)
 	{
 		gunRDY = true;
 	}
-	if ((currTime - rocketLastShotTime) > rocketCoolDown)
+	if (!rocketRDY && (currTime - rocketLastShotTime) > rocketCoolDown)
 	{
 		rocketRDY = true;
+		isLeft = !isLeft;
 	}
 	if ((currTime - laserLastShotTime) > laserCoolDown)
 	{

@@ -55,7 +55,9 @@ private:
 
 	bool CheckBoundaryExit(Vector2& pos, double hitbox);
 
-	std::shared_ptr<Projectile> SpawnProjectile(std::shared_ptr<Entity> host);
+	std::shared_ptr<Projectile> SpawnProjectile(std::shared_ptr<ShootingEntity> host, EntityType prjType);
 	std::shared_ptr<Entity> SpawnBackgroundObject(Vector2& position, double speed);
 	std::shared_ptr<EnemyEntity> SpawnEnemy(Vector2& position, EnemyType type);
+
+	Uint32 mTimeOfLastUserInput = 0;
 };

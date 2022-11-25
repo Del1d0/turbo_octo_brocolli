@@ -1,7 +1,7 @@
 #pragma once
 #include "Entity.h"
 #include "../src/baseapp.h"
-
+#include <iostream>
 //enum WeaponType
 //{
 //	CANNON,
@@ -15,7 +15,7 @@ class ShootingEntity : public Entity // управляемая стреляющая штука (враги, игр
 public:
 	ShootingEntity(Vector2 coords, EntityType type, double speed);
 	virtual ~ShootingEntity() {};
-	virtual void Shoot() = 0; //стреляет на основе решения контроллера (человек, алгоритм)
+	virtual void Shoot() {}; //стреляет на основе решения контроллера (человек, алгоритм)
 	
 	void CheckCoolDown(Uint32 currTime);
 
@@ -39,10 +39,21 @@ public:
 	int GetRocketDamage() const { return mRocketDamage; };
 	int GetLaserDamage() const { return mLaserDamage; };
 
+	int GetActiveWeapon() const { return mActiveWeapon; };
+	void SetActiveWeapon(const int newActiveWep) {
+		if (newActiveWep > 1)
+			mActiveWeapon = 0;
+		else
+			mActiveWeapon = newActiveWep;
+		std::cout << "ACTIVE WEP: " << mActiveWeapon << "\n";
+		return;
+	};
+	bool GetSideFromWhichToShoot() const { return isLeft; };
+
 protected:
 	// cool down times in ms
 	int gunCoolDown = 200;
-	int rocketCoolDown = 500;
+	int rocketCoolDown = 400;
 	int laserCoolDown = 1000;
 						// добавить разные виды пушек (обычная, быстрая, взрывная и т.д.)
 
@@ -59,4 +70,7 @@ protected:
 	int mBulletDamage = 20;
 	int mRocketDamage = 100;
 	int mLaserDamage = 100;
+
+	int mActiveWeapon = 0; // 0 -gun, 1 - rocket (переделать в enum потом)
+	bool isLeft = false; // from which side to shoot next projectile
 };

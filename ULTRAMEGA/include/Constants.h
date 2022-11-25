@@ -10,6 +10,7 @@ const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 800;
 
 const int SLUG_EXPOLION_LIFETIME = 1850;
+const int ROCKET_ANIMATION_INCREMENT = 30;
 
 const int ENEMY_WAVE_COOLDOWN = 1500; // time between enemy waves
 

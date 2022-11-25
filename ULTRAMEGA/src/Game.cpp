@@ -31,6 +31,7 @@ void Game::Initialize()
 	render::LoadResource("resources/images/slug.png"); // slug
 	render::LoadResource("resources/images/explosion0.png");
 	render::LoadResource("resources/images/lightDrone.png"); // enemy
+	render::LoadResource("resources/images/apple.png", "rocket"); // rocket
 	
 	auto explosionAtlas = render::Atlas::Create("resources/images/explosions_sprite0.png", "explosion0");
 	int wid = 91;
@@ -46,6 +47,11 @@ void Game::Initialize()
 	explosionAtlas.AddAnimationLine("9").SetFramesCount(9, false).SetFrameHeight(wid).SetFrameWidth(hei);
 	render::BakeAtlas(explosionAtlas);
 
+	auto missileAtlas = render::Atlas::Create("resources/images/missile_sprite0.png", "missile0");
+	wid = 33;
+	hei = 91;
+	missileAtlas.AddAnimationLine("0").SetFramesCount(6, false).SetFrameHeight(hei).SetFrameWidth(wid);
+	render::BakeAtlas(missileAtlas);
 
 	int numOfClouds = GenRandomNumber(16, 32);
 	std::vector<int> speeds(numOfClouds);
@@ -59,7 +65,7 @@ void Game::Initialize()
 		auto pos = Vector2(GenRandomNumber(-10, xWindow+10), GenRandomNumber(-150, -50));
 		mBackgroundObjects.push_back(SpawnBackgroundObject(pos, speeds[i]));
 	}
-	SpawnNewEnemyWave();
+	// SpawnNewEnemyWave();
 }
 
 void Game::Render()
@@ -82,24 +88,31 @@ void Game::Render()
 
 	auto pos = mPlayer1.GetPosition();
 	double spSize = mPlayer1.GetSpriteSize();
-	render::DrawImage("player1.png", pos.x - spSize/2.0, pos.y - spSize/2.0, spSize, spSize);
+	
 	for (auto proj : mProjectiles)
 	{
 		auto ePos = proj->GetPosition();
-		double sp = proj->GetSpriteSize();
-		if(proj->IsCollided())
+		// std::cout << "y: " << ePos.y << "\n";
+		auto sp = proj->GetSpriteDimensions();
+		if (proj->GetUsingAnimation())
+		{
 			render::DrawImageFromAtlas(proj->GetTextureName(), std::to_string(proj->GetCurrentAnimationLine()),
-				proj->GetCurrentFrame(), ePos.x - 0.5 * sp, ePos.y - 0.5 * sp, sp, sp);
+				proj->GetCurrentFrame(), ePos.x - 0.5 * sp.x, ePos.y - 0.5 * sp.y, sp.x, sp.y);
+		}
 		else
-			render::DrawImage(proj->GetTextureName(), ePos.x - 0.5*sp, ePos.y - 0.5*sp, sp, sp);
+		{
+			render::DrawImage(proj->GetTextureName(), ePos.x - 0.5 * sp.x, ePos.y - 0.5 * sp.y, sp.x, sp.y);
+		}
+
 	}
+	render::DrawImage("player1.png", pos.x - spSize/2.0, pos.y - spSize/2.0, spSize, spSize);
 }
 
 void Game::ProcessInput(const Uint8* keyboard)
 {
 	double speed = mPlayer1.GetSpeed();
 	auto prevPos = mPlayer1.GetPosition();
-
+	
 	if (keyboard[SDL_SCANCODE_RIGHT] && !keyboard[SDL_SCANCODE_LEFT] && !(prevPos.x >= xWindow)) {
 		prevPos.x += speed * 1;
 	}
@@ -112,17 +125,30 @@ void Game::ProcessInput(const Uint8* keyboard)
 	if (keyboard[SDL_SCANCODE_DOWN] && !keyboard[SDL_SCANCODE_UP] && !(prevPos.y >= yWindow)) {
 		prevPos.y += speed * 1;
 	}
-	if (keyboard[SDL_SCANCODE_SPACE] && mPlayer1.IsGunRDY()) // косячно работает (нельзя лететь по диагонали и стрелять)
+	if (keyboard[SDL_SCANCODE_SPACE]) // косячно работает (нельзя лететь по диагонали и стрелять)
 	{
-		auto pnt = std::make_shared<Entity>(static_cast<Entity>(mPlayer1));
-		auto prj = SpawnProjectile(pnt);
-		prj->SetDamageValue(mPlayer1.GetBulletDamage());
-		mProjectiles.push_back(prj);
-		// cool down
-		mPlayer1.SetGunTime(SDL_GetTicks()); // Setting time of last shot
-		mPlayer1.SetGunRDY(false);
+		auto pnt = std::make_shared<ShootingEntity>(mPlayer1);
+		if(mPlayer1.IsGunRDY() && mPlayer1.GetActiveWeapon() == 0) {
+			auto prj = SpawnProjectile(pnt, BULLET);
+			prj->SetDamageValue(mPlayer1.GetBulletDamage());
+			mProjectiles.push_back(prj);
+			// cool down
+			mPlayer1.SetGunTime(SDL_GetTicks()); // Setting time of last shot
+			mPlayer1.SetGunRDY(false);
+		}
+		else if (mPlayer1.IsRocketRDY() && mPlayer1.GetActiveWeapon() == 1) {
+			auto rkt = SpawnProjectile(pnt, ROCKET);
+			rkt->SetDamageValue(mPlayer1.GetRocketDamage());
+			mProjectiles.push_back(rkt);
+			// cool down
+			mPlayer1.SetRocketTime(SDL_GetTicks()); // Setting time of last shot
+			mPlayer1.SetRocketRDY(false);
+		}
 	}
-
+	if (keyboard[SDL_SCANCODE_K] && (SDL_GetTicks() - mTimeOfLastUserInput > 500)) {
+		mPlayer1.SetActiveWeapon(mPlayer1.GetActiveWeapon() + 1);
+		mTimeOfLastUserInput = SDL_GetTicks();
+	}
 	//assigning new position
 	mPlayer1.SetPosition(prevPos);
 }
@@ -131,13 +157,11 @@ void Game::Update(Uint32 millis)
 {
 	if (mEnemies.size() == 0)
 	{
- 		SpawnNewEnemyWave();
-		/*auto en = SpawnEnemy(Vector2(xWindow / 2.0, 400), DRONE);
+ 		//SpawnNewEnemyWave();
+		auto en = SpawnEnemy(Vector2(xWindow / 2.0, 400), DRONE);
 		en->setInitPhase(0);
-		mEnemies.push_back(en);*/
+		mEnemies.push_back(en);
 	}
-	
-	//std::cout << "Player position: x = " << mPlayer1.GetPosition().x << "\t, y = " << mPlayer1.GetPosition().y << std::endl;
 	Uint32 curTime = SDL_GetTicks();
 
 	mPlayer1.CheckCoolDown(curTime);
@@ -159,7 +183,7 @@ void Game::Update(Uint32 millis)
 		{
 			enm->SetGunRDY(false);
 			enm->SetGunTime(SDL_GetTicks());
-			auto ptr = SpawnProjectile(enm);
+			auto ptr = SpawnProjectile(enm, BULLET);
 			ptr->SetDamageValue(enm->GetBulletDamage());
 			mProjectiles.push_back(ptr);
 		}
@@ -184,22 +208,12 @@ void Game::Update(Uint32 millis)
 void Game::CheckCollisions()
 {
 	auto plPos = mPlayer1.GetPosition();
-
-	// test of collisions with objects
-	/*for (auto ent : mBackgroundObjects)
-	{
-		if (mPlayer1.checkCollidedHitboxes(ent))
-		{
-			ent->collide();
-		}
-	}*/
-
+	auto ptr = std::make_shared<Entity>(mPlayer1);
 	for (auto prj : mProjectiles)
 	{
 		// collision with player
 		if (!prj->IsShotByPlayer())
 		{
-			auto ptr = std::make_shared<Entity>(mPlayer1);
 			if (!prj->IsCollided() && prj->CheckCollidedHitboxes(ptr))
 			{
 				prj->collide(0);
@@ -375,20 +389,49 @@ bool Game::CheckBoundaryExit(Vector2& pos, double hitbox)
 //////////////////////////////////
 //         EntityFactory        //
 //////////////////////////////////
-std::shared_ptr<Projectile> Game::SpawnProjectile(std::shared_ptr<Entity> host)
+std::shared_ptr<Projectile> Game::SpawnProjectile(std::shared_ptr<ShootingEntity> host, EntityType prjType)
 {
 	bool owner = (host->GetType() == PLAYER) ? true : false; // is player shot it -> true
-	auto projectile = std::make_shared<Projectile>(Vector2(host->GetPosition().x, host->GetPosition().y - 2), 10, owner);
-	projectile->SetTextureName("slug.png");
-	projectile->SetOnCollision(
-		[projectile](double dmg)
-		{
-			std::cout << "SLUG has COLLIDED\n";
-			projectile->SetTextureName("explosion0");
-		}
-	);
+	switch (prjType)
+	{
+	case BULLET:
+	{
+		auto projectile = std::make_shared<Projectile>(Vector2(host->GetPosition().x, host->GetPosition().y - 2), 10, owner);
+		projectile->SetTextureName("slug.png");
+		projectile->SetUsingAnimation(false);
+		projectile->SetOnCollision(
+			[projectile](double dmg)
+			{
+				std::cout << "SLUG has COLLIDED\n";
+				projectile->SetTextureName("explosion0");
+				projectile->SetUsingAnimation(true);
+				projectile->SetSpriteDimensions({ 60, 60 });
+			}
+		);
+		return projectile;
+	}
+	case ROCKET:
+	{
+		auto sp = host->GetHitboxDimensions();
+		int side = (host->GetSideFromWhichToShoot()) ? 1 : -1;
+		auto rkt = std::make_shared<Rocket>(Vector2(host->GetPosition().x + owner*side*sp.x/1.20, host->GetPosition().y + 8), 10, owner);
+		
+		rkt->SetTextureName("missile0");
+		rkt->SetUsingAnimation(true);
+		rkt->SetOnCollision(
+			[rkt](double dmg)
+			{
+				std::cout << "ROCKET!! has COLLIDED\n";
+				rkt->SetTextureName("explosion0");
+				rkt->SetUsingAnimation(true);
+				rkt->SetSpriteDimensions({ 150, 150 });
+			}
+		);
+		return rkt;
+	}
+	}
+	
 
-	return projectile;
 }
 
 std::shared_ptr<Entity> Game::SpawnBackgroundObject(Vector2& position, double speed)

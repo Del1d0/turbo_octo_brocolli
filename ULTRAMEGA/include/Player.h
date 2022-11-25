@@ -11,7 +11,8 @@ public:
 	~Player() {};
 	void Shoot() override;
 	void Action() override;
-	
+	virtual int GetCurrentFrame() override;
+	virtual int GetCurrentAnimationLine() override;
 	void AddScore(const int sc) { score += sc; };
 
 private:

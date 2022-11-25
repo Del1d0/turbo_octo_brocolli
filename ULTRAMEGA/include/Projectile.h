@@ -14,16 +14,26 @@ public:
 	void SetDamageValue(double value) { mDamage = value; };
 	
 	Uint32 GetTimeOfCollision() const { return timeOfCollision; };
-	
+	int GetCurrentFrame() override;
+	int GetCurrentAnimationLine() override;
 	
 protected:
 	void MovingAlgorithm() override;
 	double mDamage = 10;
 	bool isPlayerHosted = false;
 	Uint32 timeOfCollision = 0;
+	Vector2 spawnPosition;
 
-	int GetCurrentFrame() override;
-	int GetCurrentAnimationLine() override;
 
+	
 private:
+};
+
+class Rocket : public Projectile {
+public:
+	Rocket(Vector2& spawnPos, double speed, bool plHosted);
+	void Action() override;
+protected:
+	void MovingAlgorithm() override;
+	double acceleration = 0.001;
 };

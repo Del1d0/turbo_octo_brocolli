@@ -4,7 +4,7 @@
 Player::Player(Vector2 coords, double speed) :
 	ShootingEntity(coords, EntityType::PLAYER, speed)
 {
-	mHitboxSize = 64;
+	mHitboxSize = 90;
 	spriteSize = mHitboxSize;
 	onCollision =
 		[this](double dmg)
@@ -29,4 +29,14 @@ void Player::Action()
 {
 
 	return;
+}
+
+int Player::GetCurrentFrame()
+{
+	return 0;
+}
+
+int Player::GetCurrentAnimationLine()
+{
+	return 0;
 }

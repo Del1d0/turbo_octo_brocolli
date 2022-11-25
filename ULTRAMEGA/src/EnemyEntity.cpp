@@ -12,7 +12,7 @@ EnemyEntity::EnemyEntity(Vector2& pos, EnemyType type) :
 		hpCapacity = 100;
 		hpVal = hpCapacity;
 		mBulletDamage = 10;
-		mSpeed = 0.03;
+		mSpeed = 0.00;
 		spriteDim.x = 190 / shrinkFactor;
 		spriteDim.y = 220 / shrinkFactor;
 		mHitboxDim.x = (spriteDim.x)/shrinkFactor;
@@ -44,13 +44,13 @@ void EnemyEntity::Action()
 
 void EnemyEntity::MovingAlgorithm()
 {
-	Uint32 time = SDL_GetTicks(); // time in seconds
-	if (time - gunLastShotTime > 1000)
-	{
-		gunRDY = true;
-	}
-	double amplitude = WINDOW_HEIGHT / 3.2;
-	double period = 10000;
-	mPos.x = WINDOW_WIDTH / 2.0 + amplitude* cos(2 * M_PI * (time - mSpawnTime) / period + initPhase);
-	mPos.y = -50 -200*(2*initPhase/(2*M_PI)) + mSpeed * (time - mSpawnTime);
+	//Uint32 time = SDL_GetTicks(); // time in seconds
+	//if (time - gunLastShotTime > 1000)
+	//{
+	//	gunRDY = true;
+	//}
+	//double amplitude = WINDOW_HEIGHT / 3.2;
+	//double period = 10000;
+	//mPos.x = WINDOW_WIDTH / 2.0 + amplitude* cos(2 * M_PI * (time - mSpawnTime) / period + initPhase);
+	//mPos.y = -50 -200*(2*initPhase/(2*M_PI)) + mSpeed * (time - mSpawnTime);
 }
