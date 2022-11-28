@@ -17,14 +17,21 @@ public:
 	int GetCurrentFrame() override;
 	int GetCurrentAnimationLine() override;
 	
+	bool GetIsItTimeToDie() const { return isItTimeToDie; };
+	
 protected:
 	void MovingAlgorithm() override;
+	virtual void CheckLifetime() {};
+
 	double mDamage = 10;
 	bool isPlayerHosted = false;
 	Uint32 timeOfCollision = 0;
 	Vector2 spawnPosition;
 
+	bool isItTimeToDie = false;
+	double lifespan = 1e10;
 
+	Uint32 mSpawnTime;
 	
 private:
 };
@@ -36,4 +43,16 @@ public:
 protected:
 	void MovingAlgorithm() override;
 	double acceleration = 0.001;
+};
+
+class Laser : public Projectile {
+public:
+	Laser(Vector2& spawnPos, bool plHosted);
+	void Action() override;
+	bool GetIsActive() const { return isActive; };
+protected:
+	void CheckLifetime() override;
+	void MovingAlgorithm() override;
+private:
+	bool isActive = true;
 };

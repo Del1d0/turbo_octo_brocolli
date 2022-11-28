@@ -32,26 +32,10 @@ void Game::Initialize()
 	render::LoadResource("resources/images/explosion0.png");
 	render::LoadResource("resources/images/lightDrone.png"); // enemy
 	render::LoadResource("resources/images/apple.png", "rocket"); // rocket
+	render::LoadResource("resources/images/laserBeam.png", "laser"); // laser
 	
-	auto explosionAtlas = render::Atlas::Create("resources/images/explosions_sprite0.png", "explosion0");
-	int wid = 91;
-	int hei = 93;
-	explosionAtlas.AddAnimationLine("0").SetFramesCount(9, false).SetFrameHeight(wid).SetFrameWidth(hei);
-	explosionAtlas.AddAnimationLine("1").SetFramesCount(9, false).SetFrameHeight(wid).SetFrameWidth(hei);
-	explosionAtlas.AddAnimationLine("2").SetFramesCount(9, false).SetFrameHeight(wid).SetFrameWidth(hei);
-	explosionAtlas.AddAnimationLine("3").SetFramesCount(9, false).SetFrameHeight(wid).SetFrameWidth(hei);
-	explosionAtlas.AddAnimationLine("4").SetFramesCount(9, false).SetFrameHeight(wid).SetFrameWidth(hei);
-	explosionAtlas.AddAnimationLine("5").SetFramesCount(9, false).SetFrameHeight(wid).SetFrameWidth(hei);
-	explosionAtlas.AddAnimationLine("6").SetFramesCount(9, false).SetFrameHeight(wid).SetFrameWidth(hei);
-	explosionAtlas.AddAnimationLine("7").SetFramesCount(9, false).SetFrameHeight(wid).SetFrameWidth(hei);
-	explosionAtlas.AddAnimationLine("9").SetFramesCount(9, false).SetFrameHeight(wid).SetFrameWidth(hei);
-	render::BakeAtlas(explosionAtlas);
-
-	auto missileAtlas = render::Atlas::Create("resources/images/missile_sprite0.png", "missile0");
-	wid = 33;
-	hei = 91;
-	missileAtlas.AddAnimationLine("0").SetFramesCount(6, false).SetFrameHeight(hei).SetFrameWidth(wid);
-	render::BakeAtlas(missileAtlas);
+	BakeTextureAtlas("resources/images/explosions_sprite0.png", "explosion0", 90, 93, 9, 9);
+	BakeTextureAtlas("resources/images/missile_sprite0.png", "missile0", 91, 33, 0, 6);
 
 	int numOfClouds = GenRandomNumber(16, 32);
 	std::vector<int> speeds(numOfClouds);
@@ -65,7 +49,7 @@ void Game::Initialize()
 		auto pos = Vector2(GenRandomNumber(-10, xWindow+10), GenRandomNumber(-150, -50));
 		mBackgroundObjects.push_back(SpawnBackgroundObject(pos, speeds[i]));
 	}
-	// SpawnNewEnemyWave();
+	//SpawnNewEnemyWave();
 }
 
 void Game::Render()
@@ -144,6 +128,14 @@ void Game::ProcessInput(const Uint8* keyboard)
 			mPlayer1.SetRocketTime(SDL_GetTicks()); // Setting time of last shot
 			mPlayer1.SetRocketRDY(false);
 		}
+		else if (mPlayer1.IsLaserRDY() && mPlayer1.GetActiveWeapon() == 2) {
+			auto lsr = SpawnProjectile(pnt, LASER);
+			lsr->SetDamageValue(mPlayer1.GetLaserDamage());
+			mProjectiles.push_back(lsr);
+			// cool down
+			mPlayer1.SetLaserTime(SDL_GetTicks()); // Setting time of last shot
+			mPlayer1.SetLaserRDY(false);
+		}
 	}
 	if (keyboard[SDL_SCANCODE_K] && (SDL_GetTicks() - mTimeOfLastUserInput > 500)) {
 		mPlayer1.SetActiveWeapon(mPlayer1.GetActiveWeapon() + 1);
@@ -173,6 +165,11 @@ void Game::Update(Uint32 millis)
 
 	for (auto prj : mProjectiles)
 	{
+		if (prj->GetType() == LASER)
+		{
+			Vector2 newPos = { mPlayer1.GetPosition().x, (mPlayer1.GetPosition().y - 2*mPlayer1.GetHitboxDimensions().y / 2.0) / 2.0 }; // +10 сдвижка вниз для дебага
+			prj->SetPosition(newPos);
+		}
 		prj->Action();
 	}
 
@@ -226,7 +223,8 @@ void Game::CheckCollisions()
 			for (int i = 0; i < mEnemies.size(); i++)
 			{
 				auto enemyPos = mEnemies[i]->GetPosition();
-				if (!prj->IsCollided() && prj->CheckCollidedHitboxes(mEnemies[i]))
+				if (!prj->IsCollided() && prj->CheckCollidedHitboxes(mEnemies[i]) ||
+					(prj->GetType() == LASER && (SDL_GetTicks() - mEnemies[i]->GetTimeOfLastCollision()) > 50) && prj->CheckCollidedHitboxes(mEnemies[i])) // specially for laser because it can damage multiple times
 				{
 					prj->collide(0);
 					mEnemies[i]->collide(prj->GetDamageValue());
@@ -266,7 +264,8 @@ void Game::CheckCollisions()
 		auto curTime = SDL_GetTicks();
 
 		if (CheckBoundaryExit(pos, mProjectiles[i]->GetHitboxSize()) ||
-			(mProjectiles[i]->IsCollided() && (curTime - mProjectiles[i]->GetTimeOfCollision()) > SLUG_EXPOLION_LIFETIME))
+			(mProjectiles[i]->IsCollided() && (curTime - mProjectiles[i]->GetTimeOfCollision()) > SLUG_EXPOLION_LIFETIME) ||
+			mProjectiles[i]->GetIsItTimeToDie())
 		{
 			auto it = mProjectiles.begin() + i;
 			mProjectiles.erase(it);
@@ -303,6 +302,17 @@ bool Game::CheckGameOver()
 	return false;
 }
 
+
+void Game::BakeTextureAtlas(std::string path, std::string shortName, int width, int height, int lines, int framesInLine)
+{
+	auto atlas = render::Atlas::Create(path, shortName);
+	
+	for (size_t i = 0; i <= lines; i++)
+	{
+		atlas.AddAnimationLine(std::to_string(i)).SetFramesCount(framesInLine, false).SetFrameHeight(width).SetFrameWidth(height);
+	}
+	render::BakeAtlas(atlas);
+}
 
 void Game::SpawnNewEnemyWave()
 {
@@ -414,20 +424,36 @@ std::shared_ptr<Projectile> Game::SpawnProjectile(std::shared_ptr<ShootingEntity
 	{
 		auto sp = host->GetHitboxDimensions();
 		int side = (host->GetSideFromWhichToShoot()) ? 1 : -1;
-		auto rkt = std::make_shared<Rocket>(Vector2(host->GetPosition().x + owner*side*sp.x/1.20, host->GetPosition().y + 8), 10, owner);
+		auto rkt = std::make_shared<Rocket>(Vector2(host->GetPosition().x + owner*side*sp.x/1.20, host->GetPosition().y + 16), 10, owner);
 		
 		rkt->SetTextureName("missile0");
 		rkt->SetUsingAnimation(true);
 		rkt->SetOnCollision(
 			[rkt](double dmg)
 			{
-				std::cout << "ROCKET!! has COLLIDED\n";
 				rkt->SetTextureName("explosion0");
 				rkt->SetUsingAnimation(true);
 				rkt->SetSpriteDimensions({ 150, 150 });
 			}
 		);
 		return rkt;
+	}
+	case LASER:
+	{
+		Vector2 newPos = { mPlayer1.GetPosition().x, (mPlayer1.GetPosition().y - mPlayer1.GetHitboxDimensions().y / 2.0) / 2.0 };
+		auto lsr = std::make_shared<Laser>(newPos, owner);
+		lsr->SetTextureName("laser");
+		lsr->SetUsingAnimation(false);
+		lsr->SetOnCollision(
+			[lsr](double dmg)
+			{
+				std::cout << "LASER has COLLIDED\n";
+				//lsr->SetTextureName("explosion0");
+				//lsr->SetUsingAnimation(true);
+				//lsr->SetSpriteDimensions({ 60, 60 });
+			}
+		);
+		return lsr;
 	}
 	}
 	

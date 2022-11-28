@@ -30,6 +30,7 @@ public:
 	
 
 private:
+	void BakeTextureAtlas(std::string path, std::string shortName, int width, int height, int lines, int framesInLine);
 	void SpawnNewEnemyWave(); // запускаем новую волну, если враги кончились
 
 	Player mPlayer1; // игрок

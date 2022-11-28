@@ -5,14 +5,18 @@ const int REFRESH_RATE = static_cast<int>(1000 / FPS); //refresh rate in ms
 
 const int CLOUDS_MAX_SPEED = 9;
 const int CLOUDS_MIN_SPEED = 2;
+const int EXPLOSION_BLOW_AWAY_SPEED = 10;
 
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 800;
 
 const int SLUG_EXPOLION_LIFETIME = 1850;
 const int ROCKET_ANIMATION_INCREMENT = 30;
+const int LASER_ACTIVE_PHASE_TIME = 1000;
 
 const int ENEMY_WAVE_COOLDOWN = 1500; // time between enemy waves
+
+
 
 inline int GenRandomNumber(const int a, const int b)
 {

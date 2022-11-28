@@ -17,6 +17,8 @@ public:
 	void RecieveDamage(const double dmg) { hpVal -= dmg; };
 	void Action() override;
 	
+	virtual void collide(double dmg) override;
+	
 	void setInitPhase(const double phase) { initPhase = phase; };
 protected:
 	void MovingAlgorithm() override;

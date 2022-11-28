@@ -3,6 +3,7 @@
 Projectile::Projectile(Vector2& pos, double speed, bool plHost) :
 	Entity(pos, BULLET, speed), isPlayerHosted(plHost)
 {
+	mSpawnTime = SDL_GetTicks();
 	hpVal = 0;
 	hpCapacity = 0;
 	shieldCapacity = 0;
@@ -21,14 +22,12 @@ void Projectile::collide(double dmg)
 	if (onCollision)
 	{
 		mIsCollided = true;
-		mSpeed /= 2;
+		mSpeed = EXPLOSION_BLOW_AWAY_SPEED;
 		timeOfCollision = SDL_GetTicks();
 		onCollision(dmg);
 		spriteSize *= 2;
 		framesInLine = 9;
 		totalLines = 8;
-		spriteDim.x = 91;
-		spriteDim.y = 93;
 	}
 }
 
@@ -89,12 +88,12 @@ Rocket::Rocket(Vector2& spawnPos, double speed, bool plHosted) :
 	Projectile(spawnPos, speed, plHosted)
 {
 	spawnPosition = spawnPos;
-	mSpeed = 0.0015;
-	acceleration = 0.0007;
+	mSpeed = 0.0001;
+	acceleration = 0.001;
 	textureName = "missile0";
 	framesInLine = 6;
 	totalLines = 1;
-	double scale = 0.6;
+	double scale = 0.58;
 	spriteDim.x = 33*scale;
 	spriteDim.y = 98*scale;
 }
@@ -109,7 +108,7 @@ void Rocket::Action()
 	}
 	else
 	{
-		mPos.y += 10;
+		mPos.y += EXPLOSION_BLOW_AWAY_SPEED;
 	}
 }
 
@@ -126,4 +125,41 @@ void Rocket::MovingAlgorithm()
 	{
 		mAction = MOVE_DOWN;
 	}
+}
+
+///
+//====================================================== L A S E R =================================================== 
+///
+
+Laser::Laser(Vector2& spawnPos, bool plHosted):
+	Projectile(spawnPos, 0, plHosted)
+{	
+	lifespan = LASER_ACTIVE_PHASE_TIME;
+	mType = LASER;
+	spriteDim.x = 50;
+	spriteDim.y = (mPos.y);
+	mDamage = 20;
+	mHitboxDim = spriteDim;
+}
+
+void Laser::Action()
+{
+	spriteDim.x = 50;
+	spriteDim.y = 2*(mPos.y);
+	mHitboxDim = spriteDim;
+	CheckLifetime();
+}
+
+void Laser::CheckLifetime()
+{
+	if ((SDL_GetTicks() - mSpawnTime > LASER_ACTIVE_PHASE_TIME) && !isItTimeToDie)
+	{
+		isItTimeToDie = true;
+		isActive = false;
+	}
+}
+
+void Laser::MovingAlgorithm()
+{
+
 }

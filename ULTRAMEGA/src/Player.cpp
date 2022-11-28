@@ -13,7 +13,7 @@ Player::Player(Vector2 coords, double speed) :
 			this->RecieveDamage(dmg);
 		};
 
-	hpVal = 100;
+	hpVal = 1000;
 	hpCapacity = 100;
 	shieldVal = 40;
 	shieldCapacity = 40;

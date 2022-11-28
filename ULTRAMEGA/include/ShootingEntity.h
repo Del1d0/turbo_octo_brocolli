@@ -41,14 +41,14 @@ public:
 
 	int GetActiveWeapon() const { return mActiveWeapon; };
 	void SetActiveWeapon(const int newActiveWep) {
-		if (newActiveWep > 1)
+		if (newActiveWep > 2) // MAXIMUM NUMBER OF WEAPONS
 			mActiveWeapon = 0;
 		else
 			mActiveWeapon = newActiveWep;
 		std::cout << "ACTIVE WEP: " << mActiveWeapon << "\n";
 		return;
 	};
-	bool GetSideFromWhichToShoot() const { return isLeft; };
+	bool GetSideFromWhichToShoot() const { return isLeft; }; // for rockets (and bullets possibly)
 
 protected:
 	// cool down times in ms
@@ -69,8 +69,8 @@ protected:
 
 	int mBulletDamage = 20;
 	int mRocketDamage = 100;
-	int mLaserDamage = 100;
+	int mLaserDamage = 1000;
 
-	int mActiveWeapon = 0; // 0 -gun, 1 - rocket (переделать в enum потом)
+	int mActiveWeapon = 0; // 0 -gun, 1 - rocket, 2 - laser beam (переделать в enum потом)
 	bool isLeft = false; // from which side to shoot next projectile
 };

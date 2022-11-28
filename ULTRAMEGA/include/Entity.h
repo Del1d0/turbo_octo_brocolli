@@ -54,6 +54,7 @@ enum EntityType
 	ENEMY,
 	BULLET,
 	ROCKET,
+	LASER,
 	OBSTACLE,
 	BACKGROUND
 };
@@ -99,7 +100,7 @@ public:
 	void RecieveDamage(const int dmg);
 	
 	bool CheckCollidedHitboxes(const std::shared_ptr<Entity> other) const;
-
+	Uint32 GetTimeOfLastCollision() const { return mTimeOfLastCollision; };
 
 
 protected:
@@ -134,6 +135,7 @@ protected:
 
 	bool mIsCollided = false;
 	CollideCallback onCollision;
+	Uint32 mTimeOfLastCollision;
 private:
 
 };

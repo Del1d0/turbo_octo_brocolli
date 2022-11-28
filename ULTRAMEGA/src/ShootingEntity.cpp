@@ -17,7 +17,7 @@ void ShootingEntity::CheckCoolDown(Uint32 currTime)
 		rocketRDY = true;
 		isLeft = !isLeft;
 	}
-	if ((currTime - laserLastShotTime) > laserCoolDown)
+	if (!laserRDY && (currTime - laserLastShotTime) > laserCoolDown)
 	{
 		laserRDY = true;
 	}

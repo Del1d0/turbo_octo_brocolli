@@ -42,6 +42,16 @@ void EnemyEntity::Action()
 	MovingAlgorithm();
 }
 
+void EnemyEntity::collide(double dmg)
+{
+	if (onCollision)
+	{
+		mIsCollided = true;
+		onCollision(dmg);
+		mTimeOfLastCollision = SDL_GetTicks();
+	}
+}
+
 void EnemyEntity::MovingAlgorithm()
 {
 	//Uint32 time = SDL_GetTicks(); // time in seconds
