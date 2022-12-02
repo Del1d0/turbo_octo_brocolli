@@ -18,6 +18,7 @@ public:
 	int GetCurrentAnimationLine() override;
 	
 	bool GetIsItTimeToDie() const { return isItTimeToDie; };
+
 	
 protected:
 	void MovingAlgorithm() override;
@@ -32,6 +33,7 @@ protected:
 	double lifespan = 1e10;
 
 	Uint32 mSpawnTime;
+	
 	
 private:
 };
@@ -54,5 +56,8 @@ protected:
 	void CheckLifetime() override;
 	void MovingAlgorithm() override;
 private:
-	bool isActive = true;
+	bool isActive = false;
+	bool isInitializing = true;
+	void CheckInitEnd();
+	Uint32 initTime = 500;
 };

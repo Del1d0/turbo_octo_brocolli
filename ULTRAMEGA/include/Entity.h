@@ -102,6 +102,7 @@ public:
 	bool CheckCollidedHitboxes(const std::shared_ptr<Entity> other) const;
 	Uint32 GetTimeOfLastCollision() const { return mTimeOfLastCollision; };
 
+	void SetFrameTime(const int val) { frameTime = val; };
 
 protected:
 	Direction mDirection;
@@ -124,6 +125,7 @@ protected:
 	int totalLines = 0; // total number of lines in sprite sheet
 	Uint32 timeOfLastFrame = 0;
 	bool isUsingAnimation = false;
+	int frameTime = 1e6;
 
 	int hpVal = 50;
 	int hpCapacity = 50;

@@ -32,10 +32,11 @@ void Game::Initialize()
 	render::LoadResource("resources/images/explosion0.png");
 	render::LoadResource("resources/images/lightDrone.png"); // enemy
 	render::LoadResource("resources/images/apple.png", "rocket"); // rocket
-	render::LoadResource("resources/images/laserBeam.png", "laser"); // laser
+	render::LoadResource("resources/images/laserBeam.png", "laserBeam"); // laser
 	
 	BakeTextureAtlas("resources/images/explosions_sprite0.png", "explosion0", 90, 93, 9, 9);
 	BakeTextureAtlas("resources/images/missile_sprite0.png", "missile0", 91, 33, 0, 6);
+	BakeTextureAtlas("resources/images/laserInit.png", "laserInit", 96, 400, 0, 10);
 
 	int numOfClouds = GenRandomNumber(16, 32);
 	std::vector<int> speeds(numOfClouds);
@@ -77,7 +78,7 @@ void Game::Render()
 	{
 		auto ePos = proj->GetPosition();
 		// std::cout << "y: " << ePos.y << "\n";
-		auto sp = proj->GetSpriteDimensions();
+		auto sp = proj->GetSpriteDimensions(); 
 		if (proj->GetUsingAnimation())
 		{
 			render::DrawImageFromAtlas(proj->GetTextureName(), std::to_string(proj->GetCurrentAnimationLine()),
@@ -165,9 +166,10 @@ void Game::Update(Uint32 millis)
 
 	for (auto prj : mProjectiles)
 	{
+		// laser position
 		if (prj->GetType() == LASER)
 		{
-			Vector2 newPos = { mPlayer1.GetPosition().x, (mPlayer1.GetPosition().y - 2*mPlayer1.GetHitboxDimensions().y / 2.0) / 2.0 }; // +10 сдвижка вниз для дебага
+			Vector2 newPos = { mPlayer1.GetPosition().x, (mPlayer1.GetPosition().y - 2*mPlayer1.GetHitboxDimensions().y / 2.0) / 2.0 };
 			prj->SetPosition(newPos);
 		}
 		prj->Action();
@@ -416,6 +418,8 @@ std::shared_ptr<Projectile> Game::SpawnProjectile(std::shared_ptr<ShootingEntity
 				projectile->SetTextureName("explosion0");
 				projectile->SetUsingAnimation(true);
 				projectile->SetSpriteDimensions({ 60, 60 });
+				double frameTime = SLUG_EXPOLION_LIFETIME / 72.0;
+				projectile->SetFrameTime(frameTime);
 			}
 		);
 		return projectile;
@@ -440,10 +444,10 @@ std::shared_ptr<Projectile> Game::SpawnProjectile(std::shared_ptr<ShootingEntity
 	}
 	case LASER:
 	{
-		Vector2 newPos = { mPlayer1.GetPosition().x, (mPlayer1.GetPosition().y - mPlayer1.GetHitboxDimensions().y / 2.0) / 2.0 };
+		Vector2 newPos = { mPlayer1.GetPosition().x, mPlayer1.GetPosition().y - 15 };
 		auto lsr = std::make_shared<Laser>(newPos, owner);
-		lsr->SetTextureName("laser");
-		lsr->SetUsingAnimation(false);
+		lsr->SetTextureName("laserInit");
+		lsr->SetUsingAnimation(true);
 		lsr->SetOnCollision(
 			[lsr](double dmg)
 			{
