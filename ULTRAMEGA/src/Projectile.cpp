@@ -160,7 +160,6 @@ void Laser::Action()
 	}
 	if (isActive)
 	{
-		spriteDim.x = 50;
 		spriteDim.y = 2 * (mPos.y);
 		mHitboxDim = spriteDim;
 	}
@@ -180,6 +179,8 @@ void Laser::CheckLifetime()
 	{
 		isInitializing = false;
 		isActive = true;
+		spriteDim.x = 10;
+		mPos.y = mPos.y / 2.0;
 		isUsingAnimation = false; // поменять на тру когда будет анимация луча
 		textureName = "laserBeam";
 		std::cout << "laser done initializing\n";

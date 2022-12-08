@@ -1,7 +1,6 @@
 #include "../include/Game.h"
 #include <iostream>
 
-
 Game::Game(int winX, int winY, double plSpeed) :
 			xWindow(winX),
 			yWindow(winY),
@@ -77,7 +76,6 @@ void Game::Render()
 	for (auto proj : mProjectiles)
 	{
 		auto ePos = proj->GetPosition();
-		// std::cout << "y: " << ePos.y << "\n";
 		auto sp = proj->GetSpriteDimensions(); 
 		if (proj->GetUsingAnimation())
 		{
@@ -88,7 +86,6 @@ void Game::Render()
 		{
 			render::DrawImage(proj->GetTextureName(), ePos.x - 0.5 * sp.x, ePos.y - 0.5 * sp.y, sp.x, sp.y);
 		}
-
 	}
 	render::DrawImage("player1.png", pos.x - spSize/2.0, pos.y - spSize/2.0, spSize, spSize);
 }
@@ -194,9 +191,6 @@ void Game::Update(Uint32 millis)
 	{
 		GameOver();
 	}
-	// обновить координаты врагов на основании их контроллеров
-	// можно параметризовать кривую, по которой они двигаются, чтобы они шли друг за другом паровозиком по зигзагу
-	// шахматный порядок или еще что, в зависимости от типа врага
 
 	// передвинуть бонусы
 
@@ -278,7 +272,7 @@ void Game::CheckCollisions()
 	for (int i = 0; i < mEnemies.size(); i++)
 	{
 		auto pos = mEnemies[i]->GetPosition();
-		if (pos.y - 2 * mEnemies[i]->GetHitboxSize() > yWindow)
+		if ((pos.y - 2 * mEnemies[i]->GetHitboxSize()) > yWindow)
 		{
 			auto it = mEnemies.begin() + i;
 			mEnemies.erase(it);
@@ -319,7 +313,7 @@ void Game::BakeTextureAtlas(std::string path, std::string shortName, int width, 
 void Game::SpawnNewEnemyWave()
 {
 	auto logic = EnemyWaveLogic(); // number of enemies in wave and the type of enemy
-	for (size_t i = 0; i < logic.first; i++)
+	for (int i = 0; i < logic.first; i++)
 	{
 		auto en = SpawnEnemy(Vector2(xWindow / 2.0, -100 * (1 + i)), logic.second);
 		en->setInitPhase(2 * M_PI * i / logic.first);

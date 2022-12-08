@@ -5,14 +5,15 @@ EnemyEntity::EnemyEntity(Vector2& pos, EnemyType type) :
 	ShootingEntity(pos, ENEMY, 1)
 {
 	mEnType = type;
-	double shrinkFactor = 3;
+	double shrinkFactor = 2;
 	switch (mEnType)
 	{
 	case DRONE:
 		hpCapacity = 100;
 		hpVal = hpCapacity;
 		mBulletDamage = 10;
-		mSpeed = 0.00;
+		gunCoolDown = 100;
+		mSpeed = 0.01;
 		spriteDim.x = 190 / shrinkFactor;
 		spriteDim.y = 220 / shrinkFactor;
 		mHitboxDim.x = (spriteDim.x)/shrinkFactor;
@@ -22,7 +23,8 @@ EnemyEntity::EnemyEntity(Vector2& pos, EnemyType type) :
 		hpCapacity = 150;
 		hpVal = hpCapacity;
 		mBulletDamage = 20;
-		mSpeed = 2;
+		gunCoolDown /= 2.0;
+		mSpeed = 0.02;
 		break;
 	default:
 		hpCapacity = 50;
