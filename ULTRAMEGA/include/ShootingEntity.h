@@ -52,9 +52,9 @@ public:
 
 protected:
 	// cool down times in ms
-	int gunCoolDown = 200;
-	int rocketCoolDown = 400;
-	int laserCoolDown = 1000;
+	int gunCoolDown = P_CD_GUN;
+	int rocketCoolDown = P_CD_ROCKET;
+	int laserCoolDown = P_CD_LASER;
 						// добавить разные виды пушек (обычная, быстрая, взрывная и т.д.)
 
 	// ticks since last shot of every weapon
@@ -67,9 +67,9 @@ protected:
 	bool rocketRDY = true;
 	bool laserRDY = true;
 
-	int mBulletDamage = 20;
-	int mRocketDamage = 100;
-	int mLaserDamage = 1000;
+	int mBulletDamage = P_DMG_GUN;
+	int mRocketDamage = P_DMG_ROCKET;
+	int mLaserDamage = P_DMG_GUN;
 
 	int mActiveWeapon = 0; // 0 -gun, 1 - rocket, 2 - laser beam (переделать в enum потом)
 	bool isLeft = false; // from which side to shoot next projectile

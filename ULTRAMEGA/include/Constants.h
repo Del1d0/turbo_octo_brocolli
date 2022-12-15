@@ -14,9 +14,26 @@ const int SLUG_EXPOLION_LIFETIME = 1850;
 const int ROCKET_ANIMATION_INCREMENT = 30;
 const int LASER_ACTIVE_PHASE_TIME = 1000;
 
+// COOLDOWNS
+
 const int ENEMY_WAVE_COOLDOWN = 1500; // time between enemy waves
 
+// PLAYER WEAPON COOLDOWNS
+const int P_CD_GUN = 100;
+const int P_CD_ROCKET = 100;
+const int P_CD_LASER = 4000;
 
+// ENEMY WEAPON COOLDOWNS
+const int EN_CD_GUN = 200;
+const int EN_CD_ROCKET = 400;
+const int EN_CD_LASER = 1000000;
+
+// WEAPONS DAMAGE
+const int P_DMG_GUN = 10;
+const int P_DMG_ROCKET = 100;
+const int P_DMG_LASER = 1000;
+
+// вывести все кулдауны в константы!!!
 
 inline int GenRandomNumber(const int a, const int b)
 {
